@@ -8,7 +8,7 @@ TOOSKA_BEGIN_NAMESPACE(json)
 
 json_array::json_array() : json_value()
 {
-
+    _type = type_t::array_t;
 }
 
 json_array::~json_array()

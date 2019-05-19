@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <chrono>
 
+
 #include "json/json_object.h"
 #include "json/json_value.h"
 #include "json/json_document.h"
@@ -10,7 +11,9 @@
 #include "html/html_document.h"
 #include "html/html_node.h"
 #include "html/query_parser.h"
+#include "serialization/token_serializer.h"
 #include "serialization/serializable.h"
+#include "serialization/json_serializer.h"
 
 #define ASSERT(T) \
     if (!(T)) { \
@@ -52,13 +55,17 @@ void print(std::string title, std::string text){
 
 class serializable_test : public tooska::serialization::serializable
 {
+public:
     int n;
     std::string s;
 
-public:
-    serialization::serializable_token_list serialize()
-    {
-        return token("n", n) && token("s", s);
+
+//    const serialization::serialize_rule_base rule() {
+//        return field("n", n) & field("s", s);
+//    }
+    void serialize(serialization::token_serializer *t) {
+        t & field("n", n);
+        t & field("s", s);
     }
 };
 
@@ -128,8 +135,24 @@ void init_test() {
     _json.set_text(json_text);
 }
 
+void tes_serializer() {
+    tooska::json::json_document j;
+    j.set_text("{n:4,s:'test'}\n");
+    serializable_test t;
+    tooska::serialization::json_serializer ser;
+    ser.deserialize(j, &t);
+    auto doc = ser.serialize(&t);
+    ASSERT(t.n == 4);
+    std::cout << doc->to_string() <<std::endl << j.to_string()<<std::endl;
+    ASSERT(doc->to_string() == j.to_string());
+
+
+}
 int main() {
     START();
+
+    tes_serializer();
+    exit(0);
     init_test();
 
     print("HTML Formatted", _html.to_string(print_type::formatted));

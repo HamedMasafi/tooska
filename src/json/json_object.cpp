@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 
 #include "json_object.h"
 #include "json_value.h"
@@ -8,7 +9,7 @@ TOOSKA_BEGIN_NAMESPACE(json)
 
 json_object::json_object() : json_value ()
 {
-
+    _type = type_t::object_t;
 }
 
 json_object::~json_object()
@@ -68,3 +69,4 @@ void json_object::render(core::string_renderer &r)
 }
 
 TOOSKA_END_NAMESPACE
+

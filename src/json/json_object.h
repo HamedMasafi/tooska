@@ -17,6 +17,7 @@ class json_object : public json_value
 
 public:
     json_object();
+
     virtual ~json_object();
     void insert(const std::string &name, json_value *value);
     json_value *get(const std::string &name);

@@ -39,6 +39,9 @@ json_document::json_document(json_object *root)
 
 std::string json_document::to_string(print_type type) const
 {
+    if (!_root)
+        return "{}";
+
     core::string_renderer r(type);
     _root->render(r);
     return r.to_string();
@@ -246,24 +249,33 @@ json_value *json_document::parse_value(const std::string &token)
 
         return new json_value(content);
     } else {
+        json_value *v = nullptr;
         if (token == "null")
-            return new json_value();
-
-        if (token == "true" || token == "false")
-            return new json_value(token == "true");
+            v = new json_value();
+        else if (token == "true" || token == "false")
+            v = new json_value(token == "true");
 
         size_t idx = 0;
-        try {
-            int n = std::stoi(token, &idx);
-            if (idx == token.length())
-                return new json_value(n);
-        } catch (std::exception ex) { }
+        if (!v) {
+            try {
+                int n = std::stoi(token, &idx);
+                if (idx == token.length())
+                    v = new json_value(n);
+            } catch (std::exception ex) { }
+        }
 
-        try {
-            float f = std::stof(token, &idx);
-            if (idx == token.length())
-                return new json_value(f);
-        } catch (std::exception ex) { }
+        if (!v) {
+            try {
+                float f = std::stof(token, &idx);
+                if (idx == token.length())
+                    v = new json_value(f);
+            } catch (std::exception ex) { }
+        }
+
+        if (v) {
+            v->_s = token;
+            return v;
+        }
 
         print_invalid_token_message(token);
         return nullptr;
