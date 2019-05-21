@@ -30,6 +30,7 @@ protected:
 //    std::vector<std::function<int(int)>> _check_fns;
     std::vector<int(*)(int)> _check_fns;
     std::vector<std::string> _tokens;
+    std::vector<std::string>::iterator _token_it;
 
 public:
     token_parser();

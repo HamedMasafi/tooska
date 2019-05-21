@@ -8,6 +8,10 @@ TOOSKA_BEGIN_NAMESPACE(core)
 class string_renderer;
 TOOSKA_END_NAMESPACE
 
+TOOSKA_BEGIN_NAMESPACE(serialization)
+class token_serializer;
+TOOSKA_END_NAMESPACE
+
 TOOSKA_BEGIN_NAMESPACE(json)
 class json_array;
 class json_object;
@@ -65,6 +69,7 @@ private:
     friend class json_object;
     friend class json_array;
     friend class json_document;
+    friend class tooska::serialization::token_serializer;
 };
 
 TOOSKA_END_NAMESPACE

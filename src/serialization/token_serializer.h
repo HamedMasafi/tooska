@@ -6,6 +6,7 @@
 #include "serializable.h"
 #include "../json/json_object.h"
 #include "../json/json_value.h"
+#include "../json/json_document.h"
 
 namespace std {
     inline string to_string(string __val)
@@ -13,68 +14,69 @@ namespace std {
         return __val;
     }
 }
+
+template<typename>
+struct __is_serializable_object_helper
+        : public std::false_type { };
+
+template<>
+struct __is_serializable_object_helper<tooska::serialization::serializable*>
+        : public std::true_type { };
+
+template<typename _Tp>
+struct is_serializable_object
+        : public __is_serializable_object_helper<typename std::remove_cv<_Tp>::type>::type
+{ };
+
 TOOSKA_BEGIN_NAMESPACE(serialization)
 
 class token_serializer
 {
 public:
-    enum class mode_t {
-        read,
-        write
+    enum {
+        deserialize,
+        serialize
     } mode;
     json::json_object *_obj;
     token_serializer();
     token_serializer(json::json_object *obj);
 
     template<typename T>
-    void set(const std::string &name, T& t);
+    void set(const std::string &name, T &t)
+    {
+        if (mode == deserialize)
+            read(t, _obj->get(name)->to_string());
+        else {
+            json::json_value *v = new json::json_value(t);
+            v->_s = std::to_string(t);
+            _obj->insert(name, v);
+        }
+    }
 
+    template<typename T>
+    void set(const std::string &name, T *t)
+    {
+        if (!std::is_base_of<serializable, T>::value) {
+            std::cerr << "The child for key " << name
+                      << " is not derived from tooska::serialization::serializable"
+                      << std::endl;
+            return;
+        }
+
+        if (mode == deserialize) {
+//            t = new T;
+            serializable *s = dynamic_cast<serializable*>(t);
+            auto obj = _obj->get(name)->to_object();
+            token_serializer w(obj);
+            s->serialize(&w);
+        } else {
+            serializable *s = dynamic_cast<serializable*>(t);
+            token_serializer w;
+            s->serialize(&w);
+            _obj->insert(name, w._obj);
+        }
+    }
 };
-
-template<typename T>
-void operator &(token_serializer *t, serialize_rule<T> r)
-{
-    if (t->mode == token_serializer::mode_t::read)
-        read(r.data, t->_obj->get(r.name)->to_string());
-    else
-        t->_obj->insert(r.name, new json::json_value(std::to_string(r.data)));
-}
-
-//class token_serializer_writer : public token_serializer
-//{
-//public:
-//    token_serializer_writer()
-//    {}
-
-//    template<typename T>
-//    void field(const std::string &name, T& t)
-//    { }
-//};
-
-//template<typename T>
-//void operator &(token_serializer_writer *t, serialize_rule<T> r)
-//{
-//    std::cout << "write<T> " << r.name << std::endl;
-//}
-
-//class token_serializer_reader : public token_serializer
-//{
-//public:
-//    json::json_object *_obj;
-//    token_serializer_reader(json::json_object *obj) : _obj(obj)
-//    {}
-
-//    template<typename T>
-//    void field(const std::string &name, T& t)
-//    { }
-//};
-
-//template<typename T>
-//void operator &(token_serializer_reader *t, serialize_rule<T> r)
-//{
-//    read(r.data, t->_obj->get(r.name));
-//    std::cout << "read<T> " << r.name <<"="<<t->_obj->get(r.name)<< std::endl;
-//}
 
 TOOSKA_END_NAMESPACE
 

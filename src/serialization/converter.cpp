@@ -79,5 +79,48 @@ void read(std::string &r, const std::string &s)
     r = s;
 }
 
-TOOSKA_END_NAMESPACE
 
+
+template<typename T>
+void write(const T &t, std::string &value)
+{
+
+}
+
+template<>
+void write(const int &n, std::string &s)
+{
+    s = std::to_string(n);
+}
+
+template<>
+void write(const float &f, std::string &s)
+{
+    s = std::to_string(f);
+}
+
+template<>
+void write(const long &l, std::string &s)
+{
+    s = std::to_string(l);
+}
+
+template<>
+void write(const bool &b, std::string &s)
+{
+    s = std::to_string(b);
+}
+
+template<>
+void write(const double &d, std::string &s)
+{
+    s = std::to_string(d);
+}
+
+template<>
+void write(const std::string &d, std::string &s)
+{
+    s = d;
+}
+
+TOOSKA_END_NAMESPACE

@@ -12,6 +12,15 @@ json_object::json_object() : json_value ()
     _type = type_t::object_t;
 }
 
+json_object::json_object(std::initializer_list<std::pair<std::string, json_value> > args)
+{
+    _type = type_t::object_t;
+    std::initializer_list<std::pair<std::string, json_value> >::const_iterator i;
+    for (i = args.begin(); i != args.end(); ++i) {
+//        insert(i->first, &i->second);
+    }
+}
+
 json_object::~json_object()
 {
 
@@ -69,4 +78,5 @@ void json_object::render(core::string_renderer &r)
 }
 
 TOOSKA_END_NAMESPACE
+
 

@@ -103,6 +103,7 @@ std::vector<std::string> token_parser::parse_tokens()
 //       std::cout << token << std::endl;
 //    });
 //    std::cout << "==============" << _tokens.size() << std::endl;
+    _token_it = _tokens.begin();
     return _tokens;
 }
 
@@ -151,13 +152,12 @@ bool token_parser::is_valid_token(const string &token) const
 
 string token_parser::take_token()
 {
-    static auto i = _tokens.begin();
-    if (i == _tokens.end())
+    if (_token_it == _tokens.end())
         return std::string();
 
-    auto ret = *i;
+    auto ret = *_token_it;
 //    std::cout << "Token selected: " << ret << std::endl;
-    ++i;
+    ++_token_it;
     return ret;
 }
 

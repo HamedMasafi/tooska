@@ -3,6 +3,7 @@
 
 #include "../global.h"
 #include "json_value.h"
+#include <initializer_list>
 #include <string>
 #include <map>
 
@@ -17,6 +18,7 @@ class json_object : public json_value
 
 public:
     json_object();
+    json_object(std::initializer_list<std::pair<std::string, json_value> > args);
 
     virtual ~json_object();
     void insert(const std::string &name, json_value *value);

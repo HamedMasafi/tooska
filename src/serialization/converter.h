@@ -14,6 +14,7 @@ public:
     {}
 };
 
+//read
 template<typename T>
 void read(T &t, const std::string &value);
 
@@ -34,6 +35,28 @@ void read(double &d, const std::string &s);
 
 template<>
 void read(std::string &d, const std::string &s);
+
+//write
+template<typename T>
+void write(const T &t, std::string &value);
+
+template<>
+void write(const int &n, std::string &s);
+
+template<>
+void write(const float &f, std::string &s);
+
+template<>
+void write(const long &l, std::string &s);
+
+template<>
+void write(const bool &b, std::string &s);
+
+template<>
+void write(const double &d, std::string &s);
+
+template<>
+void write(const std::string &d, std::string &s);
 
 TOOSKA_END_NAMESPACE
 

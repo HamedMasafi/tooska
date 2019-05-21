@@ -55,13 +55,6 @@ constexpr serialize_rule<T2> operator &(serialize_rule<T1> &&l, serialize_rule<T
 
 class serializable
 {
-protected:
-    template<typename T>
-    constexpr serialize_rule<T> field(const std::string &&name, T &data)
-    {
-        return serialize_rule<T>{name, data};
-    }
-
 public:
     serializable();
     virtual ~serializable() = default;
