@@ -110,7 +110,7 @@ void html_document::parse()
         if (token == ">"){
             if (_tokens.size() > i + 1 && _tokens.at(i + 1) != "<") {
                 auto text = core::string_helper::trim_copy(_tokens.at(i + 1));
-                if (any_of(text.begin(), text.end(), &iswalpha)) {
+                if (any_of(text.begin(), text.end(), &iswprint)) {
                     if (!stack.size()) {
                         std::cerr << "Invalid document" << std::endl << text;
                         return;

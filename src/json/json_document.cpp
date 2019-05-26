@@ -53,7 +53,7 @@ json_value *json_document::find(const std::string &path)
         return nullptr;
 
     bool ok = std::all_of(path.begin(), path.end(), [](int n){
-        return std::isalpha(n) || std::isdigit(n) || n == '.' || n == '_';
+        return isalpha(n) || isdigit(n) || n == '.' || n == '_';
     });
     if (!ok) {
         std::cerr << "Invalid path: " << path << std::endl;
