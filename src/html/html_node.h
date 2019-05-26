@@ -96,6 +96,7 @@ public:
     void setHasCloseTag(bool hasCloseTag);
     std::vector<html_node *> childs() const;
     html_tag_vector find(const std::string &query);
+    html_tag_vector find(std::function<bool(html_tag*)> &check);
 
     std::string to_string(print_type type = print_type::compact);
 

@@ -173,6 +173,16 @@ std::string html_tag::outter_html()
     for(it = _attributes.begin(); it != _attributes.end(); ++it)
         html.append(" " + it->first + "=\"" + it->second + "\"");
 
+    if (_classes.size()) {
+        html.append(" class=\"");
+        std::vector<std::string>::iterator classes_it;
+        for (classes_it = _classes.begin(); classes_it != _classes.end(); ++classes_it) {
+            if (classes_it != _classes.begin())
+                html.append(" ");
+            html.append(*classes_it);
+        }
+        html.append("\"");
+    }
     if (_has_close_tag)
         html.append(">");
     else
@@ -272,6 +282,26 @@ html_tag_vector html_tag::find(const std::string &query)
     qp.set_text(query);
     qp.tag = this;
     return qp.search();
+}
+
+html_tag_vector html_tag::find(std::function<bool (html_tag *)> &check)
+{
+    html_tag_vector ret;
+    std::function<void(html_node*)> ch = [&](html_node *node){
+        auto tag = node->to_tag();
+        if (!tag)
+            return;
+
+        if (check(tag))
+            ret.push_back(tag);
+
+        auto childs = tag->childs();
+        for (auto i = childs.begin(); i != childs.end(); ++i) {
+            ch(*i);
+        }
+    };
+    ch(this);
+    return ret;
 }
 
 void text_node::append(core::string_renderer &r)
