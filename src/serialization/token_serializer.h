@@ -54,7 +54,7 @@ public:
     }
 
     template<typename T>
-    void set(const std::string &name, T *t)
+    void set(const std::string &name, T* &t)
     {
         if (!std::is_base_of<serializable, T>::value) {
             std::cerr << "The child for key " << name
@@ -64,7 +64,9 @@ public:
         }
 
         if (mode == deserialize) {
-//            t = new T;
+            if (t)
+                delete t;
+            t = new T;
             serializable *s = dynamic_cast<serializable*>(t);
             auto obj = _obj->get(name)->to_object();
             token_serializer w(obj);

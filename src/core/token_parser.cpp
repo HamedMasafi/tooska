@@ -64,8 +64,11 @@ std::vector<std::string> token_parser::parse_tokens()
                 if (literal->insert_content) {
                     if (literal->insert_begin_end)
                         _tokens.push_back(literal->begin);
+
                     if (is_valid_token(last_token))
                         _tokens.push_back(last_token);
+                    else if (literal->insert_if_empty)
+                        _tokens.push_back("");
 
                     if (literal->insert_begin_end)
                         _tokens.push_back(literal->end);

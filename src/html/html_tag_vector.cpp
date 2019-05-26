@@ -13,19 +13,15 @@ html_tag_vector::html_tag_vector() : std::vector<html_tag*>()
 
 void html_tag_vector::add_class(const std::string &cls)
 {
-    std::for_each(begin(), end(), [&cls](html_node *node){
-        auto tag = node->to_tag();
-        if (tag)
-            tag->add_class(cls);
+    std::for_each(begin(), end(), [&cls](html_tag *tag){
+        tag->add_class(cls);
     });
 }
 
 void html_tag_vector::remove_class(const std::string &cls)
 {
-    std::for_each(begin(), end(), [&cls](html_node *node){
-        auto tag = node->to_tag();
-        if (tag)
-            tag->remove_class(cls);
+    std::for_each(begin(), end(), [&cls](html_tag *tag){
+        tag->remove_class(cls);
     });
 }
 

@@ -22,6 +22,23 @@ protected:
         std::string ignore;
         bool insert_begin_end;
         bool insert_content;
+        bool insert_if_empty;
+
+        literal_t(std::string begin, std::string end, std::string ignore,
+                bool insert_begin_end, bool insert_content)
+            : begin(begin), end(end), ignore(ignore),
+              insert_begin_end(insert_begin_end),
+              insert_content(insert_content),
+              insert_if_empty(false)
+        {}
+
+        literal_t(std::string begin, std::string end, std::string ignore,
+                bool insert_begin_end, bool insert_content, bool insert_if_empty)
+            : begin(begin), end(end), ignore(ignore),
+              insert_begin_end(insert_begin_end),
+              insert_content(insert_content),
+              insert_if_empty(insert_if_empty)
+        {}
     };
 
     std::string _error_message;

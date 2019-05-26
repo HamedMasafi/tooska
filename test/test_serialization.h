@@ -29,7 +29,7 @@ public:
     std::string s;
     serializable_test_child *child;
 
-    serializable_test() : child(new serializable_test_child())
+    serializable_test() : child(nullptr)
     {}
 
     void serialize(tooska::serialization::token_serializer *t) {
@@ -42,17 +42,7 @@ public:
 
 void test_serialization() {
     tooska::json::json_document j;
-//    tooska::json::json_object o{
-//        {"n", 4},
-//        {"f", 3.14f},
-//        {"s", "test"},
-//        {"child", tooska::json::json_object{
-//                {"name", "hamed"},
-//                {"last_name", "masafi"},
-//                {"age", 35}
-//            }
-//        }
-//    };
+
     j.set_text(R"({
                n:4,
                f:3.14,
@@ -63,7 +53,7 @@ void test_serialization() {
                     age: 35
                }
                }\n)");
-    std::cout << j.to_string()<<std::endl;
+
     serializable_test t;
     tooska::serialization::json_serializer ser;
     ser.deserialize(j, &t);
@@ -76,8 +66,6 @@ void test_serialization() {
     ASSERT(t.n == 4);
 
     ASSERT(doc->to_string() == j.to_string());
-
-
 }
 
 #endif // TEST_SERIALIZATION_H

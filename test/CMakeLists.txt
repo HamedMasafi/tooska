@@ -1,5 +1,3 @@
-file(GLOB SOURCES "main.cpp")
-
-add_executable (tooska_tests main.cpp)
+add_executable (tooska_tests "main.cpp")
 target_link_libraries (tooska_tests LINK_PUBLIC tooska)
 

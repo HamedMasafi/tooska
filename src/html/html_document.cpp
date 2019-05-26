@@ -22,8 +22,8 @@ int html_document::token(int n)
 html_document::html_document() : token_parser(), _root_tag(nullptr)
 {
     _literals.push_back(new literal_t{">",  "<",  "",     true,  true});
-    _literals.push_back(new literal_t{"\"", "\"", "\\\"", false, true});
-    _literals.push_back(new literal_t{"'",  "'",  "\\'",  false, true});
+    _literals.push_back(new literal_t{"\"", "\"", "\\\"", false, true, true});
+    _literals.push_back(new literal_t{"'",  "'",  "\\'",  false, true, true});
     _literals.push_back(new literal_t{"!--",  "-->",  "",     false,  false});
 
     _check_fns.push_back(&html_document::token);
