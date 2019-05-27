@@ -71,4 +71,9 @@ void json_array::render(core::string_renderer &r)
     r.append("]");
 }
 
+void json_array::for_each(const std::function<void (json_value *)> &callback)
+{
+    std::for_each(_values.begin(), _values.end(), callback);
+}
+
 TOOSKA_END_NAMESPACE

@@ -4,6 +4,7 @@
 #include "../global.h"
 #include "json_value.h"
 #include <vector>
+#include <functional>
 
 TOOSKA_BEGIN_NAMESPACE(core)
 class string_renderer;
@@ -23,6 +24,7 @@ public:
     const json_value *operator[](const size_t &i) const;
     json_value *operator[](const size_t &i);
 
+    void for_each(const std::function<void(json_value*)> &callback);
 private:
     void render(core::string_renderer &r) override;
 };

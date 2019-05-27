@@ -10,6 +10,7 @@ TOOSKA_END_NAMESPACE
 
 TOOSKA_BEGIN_NAMESPACE(serialization)
 class token_serializer;
+class token_serializer_writer;
 TOOSKA_END_NAMESPACE
 
 TOOSKA_BEGIN_NAMESPACE(json)
@@ -70,6 +71,7 @@ private:
     friend class json_array;
     friend class json_document;
     friend class tooska::serialization::token_serializer;
+    friend class tooska::serialization::token_serializer_writer;
 };
 
 TOOSKA_END_NAMESPACE

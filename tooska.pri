@@ -13,7 +13,11 @@ HEADERS += \
     $$PWD/src/json/json_array.h \
     $$PWD/src/json/json_document.h \
     $$PWD/src/json/json_object.h \
-    $$PWD/src/json/json_value.h
+    $$PWD/src/json/json_value.h \
+    $$PWD/src/serialization/converter.h \
+    $$PWD/src/serialization/json_serializer.h \
+    $$PWD/src/serialization/serializable.h \
+    $$PWD/src/serialization/token_serializer.h
 
 SOURCES += \
     $$PWD/src/core/string_helper.cpp \
@@ -29,4 +33,8 @@ SOURCES += \
     $$PWD/src/json/json_array.cpp \
     $$PWD/src/json/json_document.cpp \
     $$PWD/src/json/json_object.cpp \
-    $$PWD/src/json/json_value.cpp
+    $$PWD/src/json/json_value.cpp \
+    $$PWD/src/serialization/converter.cpp \
+    $$PWD/src/serialization/json_serializer.cpp \
+    $$PWD/src/serialization/serializable.cpp \
+    $$PWD/src/serialization/token_serializer.cpp

@@ -16,7 +16,7 @@ struct serialize_rule_base
     const std::string &name;
     constexpr serialize_rule_base(const std::string &name) : next(nullptr), name(name)
     {
-        std::cout << "ctor " << name << std::endl;
+//        std::cout << "ctor " << name << std::endl;
     }
     virtual ~serialize_rule_base() {
         std::cout << "~ctor " << name << std::endl;
@@ -35,7 +35,7 @@ struct serialize_rule : public serialize_rule_base
 
     constexpr serialize_rule(const std::string &name, T &data) : serialize_rule_base(name), data(data)
     {
-        std::cout << "*" <<name <<"*" << std::endl;
+//        std::cout << "*" <<name <<"*" << std::endl;
     }
 
     template<typename _T>
