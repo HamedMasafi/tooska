@@ -28,6 +28,7 @@ void test_html() {
                 <img src="image.png" />
             </p>
             <b>Other</b>
+            یک متن فارسی
         </body>
     </html>)~";
 
@@ -46,6 +47,8 @@ void test_html() {
     b.add_class("new-class2");
     auto new_classes2 = _html.query(".new-class2");
     ASSERT(b.size() == new_classes2.size());
+
+    std::cout << _html.to_string(tooska::print_type::formatted) << std::endl;
 }
 
 #endif // TEST_HTML_H

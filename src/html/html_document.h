@@ -24,11 +24,12 @@ public:
     html_tag_vector get_by_tag_name(const std::string &tag_name);
     html_tag_vector get_by_class_name(const std::string &class_name);
     html_tag_vector query(const std::string &q);
+    html_tag_vector find(std::function<bool(html_tag*)> &check);
 
     std::string to_string(print_type type = print_type::compact) const;
 private:
     void parse() override;
-    html_tag *parse_tag_begin(std::vector<std::string> &tokensList, size_t &i);
+    html_tag *parse_tag_begin(std::vector<std::string> &tokensList);
     static int token(int n);
 };
 

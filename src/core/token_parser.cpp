@@ -145,25 +145,36 @@ string token_parser::read_until(const string &text, size_t &i, const literal_t *
 
 bool token_parser::is_valid_token(const string &token) const
 {
+//    return true;
     if (!token.length())
         return false;
+    return !all_of(token.begin(), token.end(), iswspace);
 
-    bool r = any_of(token.begin(), token.end(), [](char ch){
-        return !iscntrl(ch);
-    });
-    if (!r)
-        cout << token << " is not valid\n";
-    return r;
+//    bool r = !all_of(token.begin(), token.end(), iswcntrl);
+//    if (!r)
+//        cout << boolalpha << token << r << "\n";
+//    return r;
 }
 
 string token_parser::take_token()
 {
-    if (_token_it == _tokens.end())
-        return std::string();
+    if (_token_it == _tokens.end()) {
+//        std::cerr << "Invalid end of document" << std::endl;
+        return std::string("\0");
+    }
 
     auto ret = *_token_it;
 //    std::cout << "Token selected: " << ret << std::endl;
     ++_token_it;
+    return ret;
+}
+
+string token_parser::next_token(int offset)
+{
+    if (_token_it == _tokens.end() - offset)
+        return std::string();
+    auto ret = *(_token_it + offset);
+//    std::cout << "Next token: " << ret << std::endl;
     return ret;
 }
 
