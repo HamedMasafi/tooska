@@ -15,6 +15,9 @@ public:
 
     void add_class(const std::string &cls);
     void remove_class(const std::string &cls);
+
+    void remove_all();
+
     html_tag_vector find(const std::string &query);
 
     html_tag_vector tags() const;

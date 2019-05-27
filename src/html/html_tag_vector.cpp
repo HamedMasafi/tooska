@@ -25,6 +25,14 @@ void html_tag_vector::remove_class(const std::string &cls)
     });
 }
 
+void html_tag_vector::remove_all()
+{
+    std::for_each(begin(), end(), [&](html_tag *tag){
+        delete tag;
+    });
+    clear();
+}
+
 html_tag_vector html_tag_vector::find(const std::string &query)
 {
     html_tag_vector vec;

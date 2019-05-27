@@ -99,8 +99,11 @@ html_tag::html_tag() : html_node (), _css(new css_node)
 
 html_tag::~html_tag()
 {
-    for (html_node *child : _childs)
+    for (html_node *child : _childs) {
+        child->set_parent(nullptr);
         delete child;
+    }
+    _childs.clear();
 }
 
 std::string html_tag::id()
@@ -165,6 +168,10 @@ void html_tag::add_child(html_node *child)
     child->set_parent(this);
 }
 
+void html_tag::remove_child(html_node *child)
+{
+    _childs.erase(remove(_childs.begin(), _childs.end(), child), _childs.end());
+}
 
 std::string html_tag::outter_html()
 {
@@ -223,22 +230,23 @@ std::string html_tag::inner_text() const
     return html;
 }
 
-html_node::html_node()
+html_node::html_node() : _parent(nullptr)
 {
 
 }
 
 html_node::~html_node()
 {
-
+    if (_parent)
+        _parent->remove_child(this);
 }
 
-html_node *html_node::parent() const
+html_tag *html_node::parent() const
 {
     return _parent;
 }
 
-void html_node::set_parent(html_node *parent)
+void html_node::set_parent(html_tag *parent)
 {
     _parent = parent;
 }
@@ -359,3 +367,4 @@ void style_tag::add_child(html_node *child)
 }
 
 TOOSKA_END_NAMESPACE
+
