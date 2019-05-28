@@ -26,6 +26,7 @@ class json_value
 public:
     enum class type_t{
         invalid,
+        null_t,
         bool_t,
         int_t,
         float_t,
@@ -33,21 +34,24 @@ public:
         object_t,
         array_t
     };
-    json_value();
-    json_value(const bool &b);
-    json_value(const int &n);
-    json_value(const float &f);
-    json_value(const std::string &value);
+    explicit json_value();
+    explicit json_value(const bool &b);
+    explicit json_value(const int &n);
+    explicit json_value(const float &f);
+    explicit json_value(const std::string &value);
     virtual ~json_value();
 
     type_t type() const;
 
+    bool is_valid() const;
     int to_int() const;
     float to_float() const;
     bool to_bool() const;
     std::string to_string() const;
-    json_object *to_object();
-    json_array *to_array();
+    json_object to_object();
+    json_array to_array();
+
+    static json_value null();
 
 //    template<class T>
 //    T to();
@@ -65,7 +69,7 @@ protected:
     type_t _type;
 
 private:
-    virtual void render(core::string_renderer &r);
+    virtual void render(core::string_renderer &r) const;
 
     friend class json_object;
     friend class json_array;

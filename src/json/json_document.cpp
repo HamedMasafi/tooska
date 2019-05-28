@@ -20,7 +20,7 @@ int json_document::token(int n)
             && n != ':' && n != ';' && n != ',' && n != ' ';
 }
 
-json_document::json_document() : token_parser(), _root(nullptr)
+json_document::json_document() : token_parser(), _root()
 {
     this->init();
 }
@@ -39,54 +39,56 @@ json_document::json_document(json_object *root)
 
 std::string json_document::to_string(print_type type) const
 {
-    if (!_root)
+    if (!_root.is_valid())
         return "{}";
 
     core::string_renderer r(type);
-    _root->render(r);
+    _root.render(r);
     return r.to_string();
 }
 
-json_value *json_document::find(const std::string &path)
+json_value json_document::find(const std::string &path)
 {
-    if (!_root)
-        return nullptr;
+    if (!_root.is_valid())
+        return json_value();
 
     bool ok = std::all_of(path.begin(), path.end(), [](int n){
         return isalpha(n) || isdigit(n) || n == '.' || n == '_';
     });
     if (!ok) {
         std::cerr << "Invalid path: " << path << std::endl;
-        return nullptr;
+        return json_value();
     }
 
     std::vector<std::string> strings;
     std::istringstream f(path);
     std::string s;
 
-    auto get = [](const std::string &q, json_value *v) -> json_value* {
-        auto arr = dynamic_cast<json_array*>(v);
+    auto get = [](const std::string &q, json_value v) -> json_value {
+        if (v.type() == json_value::type_t::array_t) {
+            auto arr = v.to_array();
 
-        if (arr) {
             if (!core::string_helper::is_integer(q)) {
                 std::cerr << "Invalid index: " << q << std::endl;
-                return nullptr;
+                return json_value();
             }
-            return arr->at(static_cast<size_t>(std::stoi(q)));
+
+            return arr.at(static_cast<size_t>(std::stoi(q)));
         }
 
-        auto obj = dynamic_cast<json_object*>(v);
+        if (v.type() == json_value::type_t::object_t) {
+            auto obj = v.to_object();
 
-        if (obj)
-            return obj->get(q);
+            return obj.get(q);
+        }
 
-        return nullptr;
+        return json_value();
     };
-    json_value *v = _root;
+    json_value v = _root;
     while (getline(f, s, '.')) {
         v = get(s, v);
-        if (!v)
-            return nullptr;
+        if (!v.is_valid())
+            return json_value();
 //        strings.push_back(s);
     }
     return v;
@@ -94,36 +96,32 @@ json_value *json_document::find(const std::string &path)
 
 bool json_document::is_array() const
 {
-    if (!_root)
+    if (!_root.is_valid())
         return false;
-    return _root->type() == json_value::type_t::array_t;
+    return _root.type() == json_value::type_t::array_t;
 }
 
 bool json_document::is_object() const
 {
-    if (!_root)
+    if (!_root.is_valid())
         return false;
-    return _root->type() == json_value::type_t::object_t;
+    return _root.type() == json_value::type_t::object_t;
 }
 
-json_array *json_document::to_array()
+json_array json_document::to_array()
 {
-    if (!_root)
-        return nullptr;
-    return _root->to_array();
+    return _root.to_array();
 }
 
-json_object *json_document::to_object()
+json_object json_document::to_object()
 {
-    if (!_root)
-        return nullptr;
-    return _root->to_object();
+    return _root.to_object();
 }
 
-json_object *json_document::parse_object()
+json_object json_document::parse_object()
 {
-    json_object *obj = new json_object;
-    json_value *value = nullptr;
+    json_object obj;
+    json_value value;
     /*
      name       0
      :          1
@@ -163,8 +161,7 @@ json_object *json_document::parse_object()
         case 1:
             if (token != ":") {
                 print_invalid_token_message(token, ":");
-                delete obj;
-                return nullptr;
+                return json_object();
             }
 
             step++;
@@ -178,7 +175,7 @@ json_object *json_document::parse_object()
 
         case 3:
             step = 0;
-            obj->insert(name, value);
+            obj.insert(name, value);
 
             if (token == "}")
                 exec_loop = false;
@@ -189,10 +186,10 @@ json_object *json_document::parse_object()
     return obj;
 }
 
-json_array *json_document::parse_array()
+json_array json_document::parse_array()
 {
     int step = 0;
-    auto arr = new json_array;
+    json_array arr;
     while (true) {
         auto token = take_token();
         if (token.empty())
@@ -209,7 +206,7 @@ json_array *json_document::parse_array()
             continue;
         }
         auto tmp = parse_value(token);
-        arr->add(tmp);
+        arr.add(tmp);
         step++;
     }
     return arr;
@@ -229,7 +226,7 @@ void json_document::init()
     _check_fns.push_back(&json_document::token);
 }
 
-json_value *json_document::parse_value(const std::string &token)
+json_value json_document::parse_value(const std::string &token)
 {
     if (token == "{")
         return parse_object();
@@ -247,42 +244,43 @@ json_value *json_document::parse_value(const std::string &token)
             print_invalid_token_message(close_quote, begin_quote);
         }
 
-        return new json_value(content);
+        return json_value(content);
     } else {
-        json_value *v = nullptr;
+        //TODO: set_int, set_bool...
+        json_value v;
         if (token == "null")
-            v = new json_value();
+            v = json_value();
         else if (token == "true" || token == "false")
-            v = new json_value(token == "true");
+            v = json_value(token == "true");
 
         size_t idx = 0;
-        if (!v) {
+        if (!v.is_valid()) {
             try {
                 int n = std::stoi(token, &idx);
                 if (idx == token.length())
-                    v = new json_value(n);
+                    v = json_value(n);
             } catch (std::exception ex) { }
         }
 
-        if (!v) {
+        if (!v.is_valid()) {
             try {
                 float f = std::stof(token, &idx);
                 if (idx == token.length())
-                    v = new json_value(f);
+                    v = json_value(f);
             } catch (std::exception ex) { }
         }
 
-        if (v) {
-            v->_s = token;
+        if (v.is_valid()) {
+            v._s = token;
             return v;
         }
 
         print_invalid_token_message(token);
-        return nullptr;
+        return json_value();
     }
 }
 
-json_value *json_document::parse_value()
+json_value json_document::parse_value()
 {
     auto token = take_token();
     return parse_value(token);

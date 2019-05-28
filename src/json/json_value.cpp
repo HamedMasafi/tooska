@@ -33,20 +33,33 @@ json_value::type_t json_value::type() const
     return _type;
 }
 
-json_array *json_value::to_array()
+json_array json_value::to_array()
 {
-    if (_type == type_t::array_t)
-        return dynamic_cast<json_array*>(this);
-    else
-        return nullptr;
+//    if (_type == type_t::array_t)
+//        return dynamic_cast<json_array*>(this);
+//    else
+//        return nullptr;
 }
 
-json_object *json_value::to_object()
+json_object json_value::to_object()
 {
-    if (_type == type_t::object_t)
-        return dynamic_cast<json_object*>(this);
-    else
-        return nullptr;
+    return static_cast<json_object>(*this);
+//    if (_type == type_t::object_t)
+//        return dynamic_cast<json_object*>(this);
+//    else
+//        return nullptr;
+}
+
+json_value json_value::null()
+{
+    json_value v;
+    v._type = type_t::null_t;
+    return v;
+}
+
+bool json_value::is_valid() const
+{
+    return _type != type_t::invalid;
 }
 
 std::string json_value::to_string() const
@@ -69,26 +82,26 @@ int json_value::to_int() const
     return _n;
 }
 
-void json_value::render(core::string_renderer &r)
+void json_value::render(core::string_renderer &r) const
 {
     auto val = _s;
-    bool single_cotation = false;
-    bool double_cotation = false;
-    std::for_each(val.begin(), val.end(), [&](int ch){
-        if (ch == '\'')
-            single_cotation = true;
-        if (ch == '"')
-            double_cotation = true;
-    });
+//    bool single_cotation = false;
+//    bool double_cotation = false;
+//    std::for_each(val.begin(), val.end(), [&](int ch){
+//        if (ch == '\'')
+//            single_cotation = true;
+//        if (ch == '"')
+//            double_cotation = true;
+//    });
 
-    if (single_cotation && double_cotation)
+//    if (single_cotation && double_cotation)
         core::string_helper::replace(val, "\"", "\\\"");
 
     switch (_type) {
     case type_t::string_t:
-        r.append(single_cotation ? "\"" : "'");
+        r.append("\"");
         r.append(val);
-        r.append(single_cotation ? "\"" : "'");
+        r.append("\"");
         break;
 
     case type_t::invalid:
@@ -113,3 +126,4 @@ void json_value::render(core::string_renderer &r)
 }
 
 TOOSKA_END_NAMESPACE
+

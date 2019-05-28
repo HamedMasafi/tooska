@@ -53,6 +53,10 @@ constexpr serialize_rule<T2> operator &(serialize_rule<T1> &&l, serialize_rule<T
     return r;
 }
 
+#define BEGIN_SERIALIZATION_BLOCK(class) void class::serialize(tooska::serialization::token_serializer *t) {
+#define FIELD(name)    t->set(#name, name);
+#define END_SERIALIZATION_BLOCK() }
+
 class serializable
 {
 public:

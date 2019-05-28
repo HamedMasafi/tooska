@@ -16,35 +16,35 @@ json_array::~json_array()
 
 }
 
-void json_array::add(json_value *v)
+void json_array::add(json_value v)
 {
     _values.push_back(v);
 }
 
-json_value *json_array::at(const size_t &pos) const
+json_value json_array::at(const size_t &pos) const
 {
     return _values.at(pos);
 }
 
-const json_value *json_array::operator[](const size_t &i) const
+const json_value json_array::operator[](const size_t &i) const
 {
     return _values[i];
 }
 
-json_value *json_array::operator[](const size_t &i)
+json_value json_array::operator[](const size_t &i)
 {
     return _values[i];
 }
 
-void json_array::render(core::string_renderer &r)
+void json_array::render(core::string_renderer &r) const
 {
     if (!_values.size()) {
         r.append("[]");
         return;
     }
 
-    bool is_simple = std::all_of(_values.begin(), _values.end(), [](json_value *v){
-            auto t = v->type();
+    bool is_simple = std::all_of(_values.begin(), _values.end(), [](json_value v){
+            auto t = v.type();
             return t == type_t::int_t || t == type_t::float_t || t == type_t::string_t;
     });
     r.append("[");
@@ -54,7 +54,7 @@ void json_array::render(core::string_renderer &r)
     }
     auto count = _values.size();
     for (auto i = _values.begin(); i != _values.end(); ++i) {
-        (*i)->render(r);
+        (*i).render(r);
 
         if (--count) {
             r.append(",");
@@ -71,7 +71,7 @@ void json_array::render(core::string_renderer &r)
     r.append("]");
 }
 
-void json_array::for_each(const std::function<void (json_value *)> &callback)
+void json_array::for_each(const std::function<void (json_value )> &callback)
 {
     std::for_each(_values.begin(), _values.end(), callback);
 }

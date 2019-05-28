@@ -14,20 +14,26 @@ TOOSKA_END_NAMESPACE
 TOOSKA_BEGIN_NAMESPACE(json)
 class json_object : public json_value
 {
-    std::map<std::string, json_value*> _values;
+    std::map<std::string, json_value> _values;
 
 public:
     json_object();
+    json_object(const json_object &other);
+    json_object(json_object &&other);
     json_object(std::initializer_list<std::pair<std::string, json_value> > args);
 
     virtual ~json_object();
-    void insert(const std::string &name, json_value *value);
-    json_value *get(const std::string &name);
 
-    json_value *operator[](const std::string &name);
+    void insert(const std::string &name, json_value *value);
+    void insert(const std::string &name, const json_value &value);
+    void insert(const std::string &name, json_value &&value);
+    bool has_key(const std::string &key) const;
+
+    json_value get(const std::string &name);
+    json_value operator[](const std::string &name);
 
 private:
-    void render(core::string_renderer &r);
+    void render(core::string_renderer &r) const;
 
     friend class json_document;
 };
