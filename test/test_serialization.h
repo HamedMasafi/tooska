@@ -65,7 +65,7 @@ void test_serialization() {
     auto doc = ser.serialize(&t);
     ASSERT(t.n == 4);
 
-    ASSERT(doc->to_string() == j.to_string());
+    ASSERT(doc.to_string() == j.to_string());
 }
 
 #endif // TEST_SERIALIZATION_H

@@ -33,20 +33,26 @@ json_value::type_t json_value::type() const
     return _type;
 }
 
-json_array *json_value::to_array()
+bool json_value::is_valid() const
 {
-    if (_type == type_t::array_t)
-        return dynamic_cast<json_array*>(this);
-    else
-        return nullptr;
+    return _type != type_t::invalid;
 }
 
-json_object *json_value::to_object()
+json_value json_value::null()
 {
-    if (_type == type_t::object_t)
-        return dynamic_cast<json_object*>(this);
-    else
-        return nullptr;
+    json_value v;
+    v._type = type_t::null;
+    return  v;
+}
+
+const json_array &json_value::to_array()
+{
+    return dynamic_cast<json_array&>(*this);
+}
+
+const json_object &json_value::to_object()
+{
+    return dynamic_cast<json_object&>(*this);
 }
 
 std::string json_value::to_string() const
@@ -69,7 +75,7 @@ int json_value::to_int() const
     return _n;
 }
 
-void json_value::render(core::string_renderer &r)
+void json_value::render(core::string_renderer &r) const
 {
     auto val = _s;
 //    bool single_cotation = false;

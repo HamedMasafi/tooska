@@ -3,10 +3,10 @@
 
 TOOSKA_BEGIN_NAMESPACE(serialization)
 
-token_serializer::token_serializer() : mode(serialize), _obj(new json::json_object)
+token_serializer::token_serializer() : mode(serialize)
 { }
 
-token_serializer::token_serializer(json::json_object *obj) : mode(deserialize),  _obj(obj)
+token_serializer::token_serializer(json::json_object obj) : mode(deserialize),  _obj(obj)
 { }
 
 TOOSKA_END_NAMESPACE

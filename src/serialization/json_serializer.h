@@ -21,11 +21,11 @@ public:
     json_serializer();
 
 
-    tooska::json::json_document *serialize(serializable* obj) const
+    tooska::json::json_document serialize(serializable* obj) const
     {
         token_serializer w;
         obj->serialize(&w);
-        return new tooska::json::json_document(w._obj);
+        return tooska::json::json_document(w._obj);
     }
 
     void deserialize(tooska::json::json_document &doc, serializable *obj) const
@@ -34,11 +34,11 @@ public:
         obj->serialize(&w);
     }
 
-    tooska::json::json_document *serialize(std::vector<serializable*> obj) const
+    tooska::json::json_document serialize(std::vector<serializable*> obj) const
     {
         token_serializer w;
         //    obj->serialize(&w);
-        return new tooska::json::json_document(w._obj);
+        return tooska::json::json_document(w._obj);
     }
 
     template<class T>

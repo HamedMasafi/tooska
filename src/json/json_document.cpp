@@ -25,13 +25,13 @@ json_document::json_document() : token_parser(), _root(nullptr)
     this->init();
 }
 
-json_document::json_document(json_array *root)
+json_document::json_document(json_array root)
  : token_parser(), _root(root)
 {
     init();
 }
 
-json_document::json_document(json_object *root)
+json_document::json_document(json_object root)
  : token_parser(), _root(root)
 {
     init();
@@ -39,54 +39,55 @@ json_document::json_document(json_object *root)
 
 std::string json_document::to_string(print_type type) const
 {
-    if (!_root)
+    if (_root.is_valid())
         return "{}";
 
     core::string_renderer r(type);
-    _root->render(r);
+    _root.render(r);
     return r.to_string();
 }
 
-json_value *json_document::find(const std::string &path)
+json_value json_document::find(const std::string &path)
 {
-    if (!_root)
-        return nullptr;
+    if (_root.is_valid())
+        return json_value();
 
     bool ok = std::all_of(path.begin(), path.end(), [](int n){
         return isalpha(n) || isdigit(n) || n == '.' || n == '_';
     });
     if (!ok) {
         std::cerr << "Invalid path: " << path << std::endl;
-        return nullptr;
+        return json_value();
     }
 
     std::vector<std::string> strings;
     std::istringstream f(path);
     std::string s;
 
-    auto get = [](const std::string &q, json_value *v) -> json_value* {
-        auto arr = dynamic_cast<json_array*>(v);
+    auto get = [](const std::string &q, json_value v) -> json_value {
 
-        if (arr) {
+        if (v.type() == json_value::type_t::array_t) {
+            auto arr = v.to_array();
+
             if (!core::string_helper::is_integer(q)) {
                 std::cerr << "Invalid index: " << q << std::endl;
-                return nullptr;
+                return json_value();
             }
-            return arr->at(static_cast<size_t>(std::stoi(q)));
+            return arr.at(static_cast<size_t>(std::stoi(q)));
         }
 
-        auto obj = dynamic_cast<json_object*>(v);
+        if (v.type() == json_value::type_t::object_t) {
+            auto obj = v.to_object();
 
-        if (obj)
-            return obj->get(q);
-
-        return nullptr;
+            return obj.get(q);
+        }
+        return json_value();
     };
-    json_value *v = _root;
+    json_value v = _root;
     while (getline(f, s, '.')) {
         v = get(s, v);
-        if (!v)
-            return nullptr;
+        if (v.is_valid())
+            return json_value();
 //        strings.push_back(s);
     }
     return v;
@@ -94,30 +95,30 @@ json_value *json_document::find(const std::string &path)
 
 bool json_document::is_array() const
 {
-    if (!_root)
+    if (_root.is_valid())
         return false;
-    return _root->type() == json_value::type_t::array_t;
+    return _root.type() == json_value::type_t::array_t;
 }
 
 bool json_document::is_object() const
 {
-    if (!_root)
+    if (_root.is_valid())
         return false;
-    return _root->type() == json_value::type_t::object_t;
+    return _root.type() == json_value::type_t::object_t;
 }
 
-json_array *json_document::to_array()
+json_array json_document::to_array()
 {
-    if (!_root)
-        return nullptr;
-    return _root->to_array();
+    if (!_root.is_valid())
+        return json_array();
+    return _root.to_array();
 }
 
-json_object *json_document::to_object()
+json_object json_document::to_object()
 {
-    if (!_root)
-        return nullptr;
-    return _root->to_object();
+    if (!_root.is_valid())
+        return json_object();
+    return _root.to_object();
 }
 
 json_object *json_document::parse_object()

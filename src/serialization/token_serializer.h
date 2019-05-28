@@ -38,20 +38,20 @@ public:
         deserialize,
         serialize
     } mode;
-    json::json_object *_obj;
+    json::json_object _obj;
     token_serializer();
-    token_serializer(json::json_object *obj);
+    token_serializer(json::json_object obj);
 
     template<typename T>
     void set(const std::string &name, T &t)
     {
         if (mode == deserialize) {
-            if (_obj->has_key(name))
-                read(t, _obj->get(name)->to_string());
+            if (_obj.has_key(name))
+                read(t, _obj.get(name).to_string());
         } else {
-            json::json_value *v = new json::json_value(t);
-            v->_s = std::to_string(t);
-            _obj->insert(name, v);
+            json::json_value v(t);
+            v._s = std::to_string(t);
+            _obj.insert(name, v);
         }
     }
 
@@ -70,77 +70,77 @@ public:
                 delete t;
             t = new T;
             serializable *s = dynamic_cast<serializable*>(t);
-            auto obj = _obj->get(name)->to_object();
+            auto obj = _obj.get(name).to_object();
             token_serializer w(obj);
             s->serialize(&w);
         } else {
             serializable *s = dynamic_cast<serializable*>(t);
             token_serializer w;
             s->serialize(&w);
-            _obj->insert(name, w._obj);
+            _obj.insert(name, w._obj);
         }
     }
 };
 
-class token_serializer_reader : public token_serializer
-{
-public:
-    token_serializer_reader(json::json_object *obj);
+//class token_serializer_reader : public token_serializer
+//{
+//public:
+//    token_serializer_reader(json::json_object *obj);
 
-    template<typename T>
-    void set(const std::string &name, T &t)
-    {
-        read(t, _obj->get(name)->to_string());
-    }
-    template<typename T>
-    void set(const std::string &name, T* &t)
-    {
-        if (!std::is_base_of<serializable, T>::value) {
-            std::cerr << "The child for key " << name
-                      << " is not derived from tooska::serialization::serializable"
-                      << std::endl;
-            return;
-        }
+//    template<typename T>
+//    void set(const std::string &name, T &t)
+//    {
+//        read(t, _obj.get(name).to_string());
+//    }
+//    template<typename T>
+//    void set(const std::string &name, T* &t)
+//    {
+//        if (!std::is_base_of<serializable, T>::value) {
+//            std::cerr << "The child for key " << name
+//                      << " is not derived from tooska::serialization::serializable"
+//                      << std::endl;
+//            return;
+//        }
 
-        if (t)
-            delete t;
-        t = new T;
-        serializable *s = dynamic_cast<serializable*>(t);
-        auto obj = _obj->get(name)->to_object();
-        token_serializer w(obj);
-        s->serialize(&w);
-    }
-};
+//        if (t)
+//            delete t;
+//        t = new T;
+//        serializable *s = dynamic_cast<serializable*>(t);
+//        auto obj = _obj.get(name).to_object();
+//        token_serializer w(obj);
+//        s->serialize(&w);
+//    }
+//};
 
-class token_serializer_writer : public token_serializer
-{
-public:
-    token_serializer_writer();
+//class token_serializer_writer : public token_serializer
+//{
+//public:
+//    token_serializer_writer();
 
-    template<typename T>
-    void set(const std::string &name, T &t)
-    {
-        json::json_value *v = new json::json_value(t);
-        v->_s = std::to_string(t);
-        _obj->insert(name, v);
-    }
+//    template<typename T>
+//    void set(const std::string &name, T &t)
+//    {
+//        json::json_value *v = new json::json_value(t);
+//        v->_s = std::to_string(t);
+//        _obj.insert(name, v);
+//    }
 
-    template<typename T>
-    void set(const std::string &name, T* &t)
-    {
-        if (!std::is_base_of<serializable, T>::value) {
-            std::cerr << "The child for key " << name
-                      << " is not derived from tooska::serialization::serializable"
-                      << std::endl;
-            return;
-        }
+//    template<typename T>
+//    void set(const std::string &name, T* &t)
+//    {
+//        if (!std::is_base_of<serializable, T>::value) {
+//            std::cerr << "The child for key " << name
+//                      << " is not derived from tooska::serialization::serializable"
+//                      << std::endl;
+//            return;
+//        }
 
-        serializable *s = dynamic_cast<serializable*>(t);
-        token_serializer w;
-        s->serialize(&w);
-        _obj->insert(name, w._obj);
-    }
-};
+//        serializable *s = dynamic_cast<serializable*>(t);
+//        token_serializer w;
+//        s->serialize(&w);
+//        _obj->insert(name, w._obj);
+//    }
+//};
 
 TOOSKA_END_NAMESPACE
 
