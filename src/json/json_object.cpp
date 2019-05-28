@@ -31,6 +31,11 @@ void json_object::insert(const std::string &name, json_value *value)
     _values[name] = value;
 }
 
+bool json_object::has_key(const std::string &name)
+{
+    return _values.find(name) != _values.end();
+}
+
 json_value *json_object::get(const std::string &name)
 {
     return _values[name];
@@ -57,9 +62,9 @@ void json_object::render(core::string_renderer &r)
         r.indent();
     }
     for (auto i = _values.cbegin(); i != _values.cend(); ++i) {
-        r.append("'");
+        r.append("\"");
         r.append((*i).first);
-        r.append("':");
+        r.append("\":");
         r.space();
         (*i).second->render(r);
 
@@ -78,5 +83,3 @@ void json_object::render(core::string_renderer &r)
 }
 
 TOOSKA_END_NAMESPACE
-
-

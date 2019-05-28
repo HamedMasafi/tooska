@@ -45,9 +45,10 @@ public:
     template<typename T>
     void set(const std::string &name, T &t)
     {
-        if (mode == deserialize)
-            read(t, _obj->get(name)->to_string());
-        else {
+        if (mode == deserialize) {
+            if (_obj->has_key(name))
+                read(t, _obj->get(name)->to_string());
+        } else {
             json::json_value *v = new json::json_value(t);
             v->_s = std::to_string(t);
             _obj->insert(name, v);

@@ -151,8 +151,8 @@ bool token_parser::is_valid_token(const string &token) const
     bool r = any_of(token.begin(), token.end(), [](char ch){
         return !iscntrl(ch);
     });
-    if (!r)
-        cout << token << " is not valid\n";
+//    if (!r)
+//        cout << token << " is not valid\n";
     return r;
 }
 

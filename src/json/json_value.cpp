@@ -72,23 +72,23 @@ int json_value::to_int() const
 void json_value::render(core::string_renderer &r)
 {
     auto val = _s;
-    bool single_cotation = false;
-    bool double_cotation = false;
-    std::for_each(val.begin(), val.end(), [&](int ch){
-        if (ch == '\'')
-            single_cotation = true;
-        if (ch == '"')
-            double_cotation = true;
-    });
+//    bool single_cotation = false;
+//    bool double_cotation = false;
+//    std::for_each(val.begin(), val.end(), [&](int ch){
+//        if (ch == '\'')
+//            single_cotation = true;
+//        if (ch == '"')
+//            double_cotation = true;
+//    });
 
-    if (single_cotation && double_cotation)
+//    if (single_cotation && double_cotation)
         core::string_helper::replace(val, "\"", "\\\"");
 
     switch (_type) {
     case type_t::string_t:
-        r.append(single_cotation ? "\"" : "'");
+        r.append("\"");
         r.append(val);
-        r.append(single_cotation ? "\"" : "'");
+        r.append("\"");
         break;
 
     case type_t::invalid:

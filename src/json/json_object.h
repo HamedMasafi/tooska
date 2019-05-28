@@ -22,6 +22,7 @@ public:
 
     virtual ~json_object();
     void insert(const std::string &name, json_value *value);
+    bool has_key(const std::string &name);
     json_value *get(const std::string &name);
 
     json_value *operator[](const std::string &name);
