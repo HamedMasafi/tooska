@@ -16,12 +16,13 @@ TOOSKA_END_NAMESPACE
 TOOSKA_BEGIN_NAMESPACE(json)
 class json_array;
 class json_object;
+class json_value_data;
 class json_value
 {
-    int _n;
-    float _f;
-    bool _b;
-    std::string _s;
+//    int _n;
+//    float _f;
+//    bool _b;
+//    std::string _s;
 
 public:
     enum class type_t{
@@ -34,12 +35,17 @@ public:
         object_t,
         array_t
     };
+    json_value(const json_value &other);
+    json_value(json_value &&other);
+
     explicit json_value();
     explicit json_value(const bool &b);
     explicit json_value(const int &n);
     explicit json_value(const float &f);
     explicit json_value(const std::string &value);
     virtual ~json_value();
+
+    json_value &operator =(const json_value &other);
 
     type_t type() const;
 
@@ -53,20 +59,9 @@ public:
 
     static json_value null();
 
-//    template<class T>
-//    T to();
-
-//    template<>
-//    int to<int>();
-
-//    template<>
-//    float to<float>();
-
-//    template<>
-//    std::string to<std::string>();
-
 protected:
     type_t _type;
+    json_value_data *_data;
 
 private:
     virtual void render(core::string_renderer &r) const;

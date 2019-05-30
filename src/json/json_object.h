@@ -12,9 +12,10 @@ class string_renderer;
 TOOSKA_END_NAMESPACE
 
 TOOSKA_BEGIN_NAMESPACE(json)
+class json_object_data;
 class json_object : public json_value
 {
-    std::map<std::string, json_value> _values;
+    json_object(json_object_data *data);
 
 public:
     json_object();
@@ -22,9 +23,10 @@ public:
     json_object(json_object &&other);
     json_object(std::initializer_list<std::pair<std::string, json_value> > args);
 
+    json_object &operator =(const json_object &other);
+
     virtual ~json_object();
 
-    void insert(const std::string &name, json_value *value);
     void insert(const std::string &name, const json_value &value);
     void insert(const std::string &name, json_value &&value);
     bool has_key(const std::string &key) const;
@@ -33,9 +35,10 @@ public:
     json_value operator[](const std::string &name);
 
 private:
+    json_object_data *_object_data;
     void render(core::string_renderer &r) const;
 
-    friend class json_document;
+    friend class json_value;
 };
 
 TOOSKA_END_NAMESPACE

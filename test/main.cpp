@@ -11,9 +11,9 @@
 int main() {
     START();
 
+    RUN_TEST(json);
     RUN_TEST(html);
     RUN_TEST(css);
-    RUN_TEST(json);
     RUN_TEST(serialization);
 
     PASSED();

@@ -6,6 +6,8 @@
 #include "test.h"
 
 void test_json() {
+    using namespace tooska::json;
+
     tooska::json::json_document _json;
 
     auto json_text = R"~(
@@ -32,10 +34,10 @@ void test_json() {
 
     _json.set_text(json_text);
     auto v = _json.find("ia.1.b");
-    ASSERT(v != nullptr);
-    ASSERT(v->type() == tooska::json::json_value::type_t::int_t);
+    ASSERT(v.is_valid());
+    ASSERT(v.type() == tooska::json::json_value::type_t::int_t);
     auto v2 = _json.find("invalid_path");
-    ASSERT(v2 == nullptr);
+    ASSERT(!v2.is_valid());
 
 }
 #endif // TEST_JSON_H

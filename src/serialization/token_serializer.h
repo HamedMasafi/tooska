@@ -6,6 +6,7 @@
 #include "serializable.h"
 #include "../json/json_object.h"
 #include "../json/json_value.h"
+#include "../json/json_value_p.h"
 #include "../json/json_document.h"
 
 namespace std {
@@ -49,8 +50,8 @@ public:
             if (_obj.has_key(name))
                 read(t, _obj.get(name).to_string());
         } else {
-            json::json_value *v = new json::json_value(t);
-            v->_s = std::to_string(t);
+            json::json_value v(t);
+            v._data->_s = std::to_string(t);
             _obj.insert(name, v);
         }
     }

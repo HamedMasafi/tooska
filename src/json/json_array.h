@@ -11,13 +11,19 @@ class string_renderer;
 TOOSKA_END_NAMESPACE
 
 TOOSKA_BEGIN_NAMESPACE(json)
+class json_array_data;
 class json_array : public json_value
 {
-    std::vector<json_value> _values;
+    json_array(json_array_data *data);
 
 public:
     json_array();
-    virtual ~json_array();
+    json_array(const json_array &other);
+    json_array(json_array &&other);
+
+    json_array &operator =(const json_array &other);
+
+    virtual ~json_array() override;
     void add(json_value v);
     json_value at(const size_t &pos) const;
 
@@ -27,6 +33,9 @@ public:
     void for_each(const std::function<void(json_value)> &callback);
 private:
     void render(core::string_renderer &r) const override;
+    json_array_data *_array_data;
+
+    friend class json_value;
 };
 
 TOOSKA_END_NAMESPACE

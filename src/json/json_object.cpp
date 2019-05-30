@@ -3,24 +3,34 @@
 
 #include "json_object.h"
 #include "json_value.h"
+#include "json_value_p.h"
 #include "../core/string_renderer.h"
 
 TOOSKA_BEGIN_NAMESPACE(json)
 
-json_object::json_object() : json_value ()
+json_object::json_object(json_object_data *data) : _object_data(data)
 {
     _type = type_t::object_t;
 }
 
-json_object::json_object(const json_object &other)
+json_object::json_object() : json_value (), _object_data(new json_object_data)
 {
-    _values = other._values;
+    _type = type_t::object_t;
+    json_value::_data = _object_data;
 }
 
+json_object::json_object(const json_object &other)
+{
+    _type = type_t::object_t;
+    _object_data = other._object_data;
+    json_value::_data = _object_data;
+}
 
 json_object::json_object(json_object &&other)
 {
-    _values = std::move(other._values);
+    _type = type_t::object_t;
+    _object_data = std::move(other._object_data);
+    json_value::_data = _object_data;
 }
 
 json_object::json_object(std::initializer_list<std::pair<std::string, json_value> > args)
@@ -37,42 +47,45 @@ json_object::~json_object()
 
 }
 
-void json_object::insert(const std::string &name, json_value *value)
+json_object &json_object::operator =(const json_object &other)
 {
-    _values[name] = *value;
+    _object_data = other._object_data;
+    _type = json_value::type_t::object_t;
+    json_value::_data = _object_data;
+    return *this;
 }
 
 void json_object::insert(const std::string &name, const json_value &value)
 {
-    _values[name] = value;
+    _object_data->values[name] = value;
 }
 
 void json_object::insert(const std::string &name, json_value &&value)
 {
-    _values[name] = std::move(value);
+    _object_data->values[name] = std::move(value);
 }
 
 bool json_object::has_key(const std::string &key) const
 {
-    return _values.find(key) != _values.end();
+    return _object_data->values.find(key) != _object_data->values.end();
 }
 
 json_value json_object::get(const std::string &name)
 {
-    return _values[name];
+    return _object_data->values[name];
 }
 
 json_value json_object::operator[](const std::string &name)
 {
-    return _values[name];
+    return _object_data->values[name];
 }
 
 void json_object::render(core::string_renderer &r) const
 {
 
-    auto count = _values.size();
+    auto count = _object_data->values.size();
 
-    bool is_simple = count < 3 && std::all_of(_values.begin(), _values.end(), [](std::map<std::string, json_value>::const_reference it){
+    bool is_simple = count < 3 && std::all_of(_object_data->values.begin(), _object_data->values.end(), [](std::map<std::string, json_value>::const_reference it){
         auto t = it.second.type();
         return t == type_t::int_t || t == type_t::float_t || t == type_t::string_t;
     });
@@ -82,7 +95,7 @@ void json_object::render(core::string_renderer &r) const
         r.new_line();
         r.indent();
     }
-    for (auto i = _values.cbegin(); i != _values.cend(); ++i) {
+    for (auto i = _object_data->values.cbegin(); i != _object_data->values.cend(); ++i) {
         r.append("\"");
         r.append((*i).first);
         r.append("\":");
@@ -104,5 +117,3 @@ void json_object::render(core::string_renderer &r) const
 }
 
 TOOSKA_END_NAMESPACE
-
-

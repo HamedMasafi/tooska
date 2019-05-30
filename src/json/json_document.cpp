@@ -7,6 +7,7 @@
 #include "json_document.h"
 #include "json_object.h"
 #include "json_value.h"
+#include "json_value_p.h"
 #include "json_array.h"
 #include "../core/string_renderer.h"
 
@@ -214,7 +215,8 @@ json_array json_document::parse_array()
 
 void json_document::parse()
 {
-    _root = parse_value();
+    auto t = parse_value();
+    _root = t;
 }
 
 void json_document::init()
@@ -249,7 +251,8 @@ json_value json_document::parse_value(const std::string &token)
         //TODO: set_int, set_bool...
         json_value v;
         if (token == "null")
-            v = json_value();
+            v = json_value::null();
+
         else if (token == "true" || token == "false")
             v = json_value(token == "true");
 
@@ -271,7 +274,7 @@ json_value json_document::parse_value(const std::string &token)
         }
 
         if (v.is_valid()) {
-            v._s = token;
+            v._data->_s = token;
             return v;
         }
 
@@ -283,7 +286,8 @@ json_value json_document::parse_value(const std::string &token)
 json_value json_document::parse_value()
 {
     auto token = take_token();
-    return parse_value(token);
+    auto t = parse_value(token);
+    return t;
 }
 
 TOOSKA_END_NAMESPACE
