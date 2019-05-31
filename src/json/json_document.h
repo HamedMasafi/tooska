@@ -15,8 +15,8 @@ class json_document : public core::token_parser
 
 public:
     json_document();
-    json_document(json_array *root);
-    json_document(json_object *root);
+    json_document(const json_array &root);
+    json_document(const json_object &root);
 
     std::string to_string(print_type type = print_type::compact) const;
     json_value find(const std::string &path);

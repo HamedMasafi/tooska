@@ -4,9 +4,32 @@
 #include <json/json_value.h>
 #include <json/json_document.h>
 #include "test.h"
+#include <iostream>
+
+using namespace tooska::json;
+
+std::ostream & operator << (std::ostream &out, const json_value::type_t &t)
+{
+    out << static_cast<int>(t);
+    return out;
+}
+
+void test_values() {
+    ASSERT2(json_value(true).type(),    json_value::type_t::bool_t);
+    ASSERT2(json_value(1).type(),       json_value::type_t::int_t);
+//    ASSERT2(json_value(1l).type(),      json_value::type_t::int_t);
+//    ASSERT2(json_value(1ll).type(),     json_value::type_t::int_t);
+//    ASSERT2(json_value(1u).type(),      json_value::type_t::int_t);
+//    ASSERT2(json_value(1ul).type(),     json_value::type_t::int_t);
+//    ASSERT2(json_value(1ull).type(),    json_value::type_t::int_t);
+//    ASSERT2(json_value(4.2).type(),     json_value::type_t::float_t);
+    ASSERT2(json_value(4.2f).type(),    json_value::type_t::float_t);
+    ASSERT2(json_value("test").type(),  json_value::type_t::string_t);
+    ASSERT2(json_value::null().type(),  json_value::type_t::null_t);
+}
 
 void test_json() {
-    using namespace tooska::json;
+    test_values();
 
     tooska::json::json_document _json;
 

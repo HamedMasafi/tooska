@@ -6,7 +6,7 @@
 #include "serializable.h"
 #include "../json/json_object.h"
 #include "../json/json_value.h"
-#include "../json/json_value_p.h"
+#include "../json/json_value_data.h"
 #include "../json/json_document.h"
 
 namespace std {

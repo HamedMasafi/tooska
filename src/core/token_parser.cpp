@@ -1,7 +1,7 @@
 #include "token_parser.h"
 #include "string_helper.h"
 
-#include <wctype.h>
+#include <cwctype>
 #include <cctype>
 #include <iostream>
 #include <stack>
@@ -10,15 +10,6 @@
 using namespace std;
 
 TOOSKA_BEGIN_NAMESPACE(core)
-
-token_parser::token_parser()
-{
-}
-
-token_parser::~token_parser()
-{
-
-}
 
 std::string token_parser::text() const
 {
@@ -110,7 +101,7 @@ std::vector<std::string> token_parser::parse_tokens()
     return _tokens;
 }
 
-string token_parser::read_until(const string &text, size_t &i, std::function<int (int)> fn) const
+string token_parser::read_until(const string &text, size_t &i, const std::function<int (int)> &fn) const
 {
     size_t start = i;
     while (text.length() > i  && fn(text.at(i))) {

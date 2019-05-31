@@ -31,8 +31,8 @@ public:
     json_value operator[](const size_t &i);
 
     void for_each(const std::function<void(json_value)> &callback);
+//    void render(core::string_renderer &r) const override;
 private:
-    void render(core::string_renderer &r) const override;
     json_array_data *_array_data;
 
     friend class json_value;

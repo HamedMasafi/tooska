@@ -1,6 +1,7 @@
 #ifndef JSON_SERIALIZER_H
 #define JSON_SERIALIZER_H
 
+#include <algorithm>
 #include <vector>
 #include "../global.h"
 #include "serializable.h"
@@ -21,24 +22,30 @@ public:
     json_serializer();
 
 
-    tooska::json::json_document *serialize(serializable* obj) const
+    tooska::json::json_object serialize(serializable* obj) const
     {
         token_serializer w;
         obj->serialize(&w);
-        return new tooska::json::json_document(&w._obj);
+        return w._obj;
     }
 
-    void deserialize(tooska::json::json_document &doc, serializable *obj) const
+    void deserialize(const tooska::json::json_object &json, serializable *obj) const
     {
-        token_serializer w(doc.to_object());
+        token_serializer w(json);
         obj->serialize(&w);
     }
 
-    tooska::json::json_document *serialize(std::vector<serializable*> obj) const
+    tooska::json::json_array serialize(std::vector<serializable*> obj) const
     {
-        token_serializer w;
-        //    obj->serialize(&w);
-        return new tooska::json::json_document(&w._obj);
+        tooska::json::json_array arr;
+
+        std::for_each(obj.begin(), obj.end(), [&](serializable *o){
+            token_serializer w;
+            o->serialize(&w);
+            arr.add(w._obj);
+        });
+
+        return arr;
     }
 
     template<class T>

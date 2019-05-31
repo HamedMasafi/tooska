@@ -4,11 +4,20 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <cassert>
 
 #define ASSERT(T) \
     if (!(T)) { \
     std::cerr << "Assert faild on line: " << __LINE__ << " : (" << #T << ")" << std::endl; \
     exit(1); \
+    }
+
+#define ASSERT2(L, R) \
+    if (R != L) { \
+        std::cerr << "Assert faild on line: " << __LINE__ << " : (" << #L << " == " << #R << ")" << std::endl; \
+        std::cerr << "Left is: " << L << std::endl; \
+        std::cerr << "Right is: " << R << std::endl; \
+        exit(1); \
     }
 
 #define START()  \

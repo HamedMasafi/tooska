@@ -5,6 +5,7 @@
 #include "../core/string_helper.h"
 #include "../core/token_parser.h"
 #include "../core/string_renderer.h"
+#include "css_p.h"
 
 #include <iostream>
 #include <algorithm>
@@ -54,7 +55,7 @@ void html_tag::append_begin_tag(core::string_renderer &r)
     for(it = _attributes.begin(); it != _attributes.end(); ++it)
         r.append(" " + it->first + "=\"" + it->second + "\"");
 
-    if (_css->_rules.size()) {
+    if (_css->_data->rules.size()) {
         r.space();
         r.append("style=\"");
         _css->inline_append(r);
@@ -134,7 +135,7 @@ void html_tag::set_attr(const std::string &name, const std::string &value)
         css_document p;
         p.set_text(value);
         auto rules = p.parse_block();
-        _css->_rules = rules;
+        _css->_data->rules = rules;
         return;
 
     } else if (n == "class") {

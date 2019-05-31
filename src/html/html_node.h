@@ -15,8 +15,12 @@ TOOSKA_END_NAMESPACE
 TOOSKA_BEGIN_NAMESPACE(html)
 class css_node;
 class html_tag;
+struct html_node_data;
+struct text_node_data;
+struct text_tag_data;
 class html_node
 {
+    html_node_data *_data;
     html_tag *_parent;
 
 public:
@@ -45,7 +49,7 @@ protected:
 
 class text_node : public html_node
 {
-
+    text_node_data *_data;
     std::string _text;
 
 public:
@@ -63,7 +67,7 @@ private:
 
 class html_tag : public html_node
 {
-
+    text_tag_data *_data;
     std::map<std::string, std::string> _attributes;
     std::vector<html_node *> _childs;
     bool _has_close_tag;

@@ -3,16 +3,11 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
-#include <wctype.h>
+#include <cwctype>
 
 TOOSKA_BEGIN_NAMESPACE(core)
 
 using namespace std;
-
-string_helper::string_helper()
-{
-
-}
 
 bool string_helper::is_integer(const string &s)
 {
@@ -94,7 +89,7 @@ bool string_helper::replace(string& str, const string& from, const string& to) {
     return true;
 }
 
-vector<string> string_helper::split(string str, const char &sep)
+vector<string> string_helper::split(const string &str, const char &sep)
 {
     string temp;
     vector<string> parts;

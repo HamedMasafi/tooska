@@ -11,7 +11,8 @@ TOOSKA_BEGIN_NAMESPACE(core)
 class string_helper
 {
 public:
-    string_helper();
+    string_helper() = default;
+
     static bool is_integer(const std::string &s);
     static bool is_float(const std::string &s);
 
@@ -25,7 +26,7 @@ public:
     static void tolower(std::string &str);
     static void toupper(std::string &str);
     static bool replace(std::string &str, const std::string &from, const std::string &to);
-    static std::vector<std::string> split(std::string str, const char &sep);
+    static std::vector<std::string> split(const std::string &str, const char &sep);
 };
 
 TOOSKA_END_NAMESPACE

@@ -1,25 +1,43 @@
 #include "css_node.h"
+#include "css_p.h"
 
 #include <algorithm>
 #include "../core/string_renderer.h"
 
 TOOSKA_BEGIN_NAMESPACE(html)
 
-css_node::css_node()
+css_node::css_node() : _data(new css_node_data)
 {
 
 }
 
+css_node::css_node(const css_node &other)
+{
+    _data = other._data;
+}
+
+css_node::css_node(css_node &&other)
+{
+    _data = std::move(other._data);
+}
+
+css_node &css_node::operator =(const css_node &other)
+{
+    delete _data;
+    _data = other._data;
+    return *this;
+}
+
 void css_node::add_rule(const std::string &name, const std::string &value)
 {
-    _rules[name] = value;
+    _data->rules[name] = value;
 }
 
 std::string css_node::to_string(print_type type) const
 {
     std::string ret;
 
-    for (auto it = _rules.begin(); it != _rules.end(); ++it) {
+    for (auto it = _data->rules.begin(); it != _data->rules.end(); ++it) {
         if (type == print_type::formatted)
             ret.append("\n    ");
 
@@ -34,7 +52,7 @@ std::string css_node::to_string(print_type type) const
         }
     }
     std::string selectors;
-    for (std::string s : _selectors) {
+    for (std::string s : _data->selectors) {
         if (selectors.size())
             selectors.append(", ");
         selectors.append(s);
@@ -48,7 +66,7 @@ std::string css_node::to_string(print_type type) const
 void css_node::append(core::string_renderer &r)
 {
     bool f = true;
-    for (std::string s : _selectors) {
+    for (std::string s : _data->selectors) {
         if (!f)
             r.append(", ");
         f = false;
@@ -56,7 +74,7 @@ void css_node::append(core::string_renderer &r)
     }
     r.append(" {");
     r.indent();
-    for (auto it = _rules.begin(); it != _rules.end(); ++it) {
+    for (auto it = _data->rules.begin(); it != _data->rules.end(); ++it) {
         r.new_line();
         r.append(it->first);
         r.append(":");
@@ -72,7 +90,7 @@ void css_node::append(core::string_renderer &r)
 
 void css_node::inline_append(core::string_renderer &r)
 {
-    for (auto it = _rules.begin(); it != _rules.end(); ++it) {
+    for (auto it = _data->rules.begin(); it != _data->rules.end(); ++it) {
         r.append(it->first);
         r.append(":");
         r.append(it->second);
@@ -90,19 +108,23 @@ std::string css_node_vector::to_string(print_type type) const
 
 void css_node::set_attr(const std::string &name, const std::string &value)
 {
-    _rules[name] = value;
+    _data->rules[name] = value;
 }
 
 void css_node::add_selector(const std::string &name)
 {
-    _selectors.push_back(name);
+    _data->selectors.push_back(name);
 }
 
 bool css_node::has_selector(const std::string &name)
 {
-    return std::any_of(_selectors.begin(), _selectors.end(), [=](std::string &s){
+    return std::any_of(_data->selectors.begin(), _data->selectors.end(), [=](std::string &s){
        return s == name;
     });
+}
+
+std::vector<std::string> css_node::selectors() const {
+    return _data->selectors;
 }
 
 TOOSKA_END_NAMESPACE

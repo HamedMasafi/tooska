@@ -7,7 +7,7 @@
 #include "json_document.h"
 #include "json_object.h"
 #include "json_value.h"
-#include "json_value_p.h"
+#include "json_value_data.h"
 #include "json_array.h"
 #include "../core/string_renderer.h"
 
@@ -26,13 +26,13 @@ json_document::json_document() : token_parser(), _root()
     this->init();
 }
 
-json_document::json_document(json_array *root)
+json_document::json_document(const json_array &root)
  : token_parser(), _root(root)
 {
     init();
 }
 
-json_document::json_document(json_object *root)
+json_document::json_document(const json_object &root)
  : token_parser(), _root(root)
 {
     init();
@@ -44,7 +44,12 @@ std::string json_document::to_string(print_type type) const
         return "{}";
 
     core::string_renderer r(type);
-    _root.render(r);
+
+    if (is_array())
+        _root.to_array().render(r);
+    if (is_object())
+        _root.to_object().render(r);
+
     return r.to_string();
 }
 

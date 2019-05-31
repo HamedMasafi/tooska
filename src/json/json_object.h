@@ -34,9 +34,9 @@ public:
     json_value get(const std::string &name);
     json_value operator[](const std::string &name);
 
+//    void render(core::string_renderer &r) const override;
 private:
     json_object_data *_object_data;
-    void render(core::string_renderer &r) const;
 
     friend class json_value;
 };

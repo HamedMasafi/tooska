@@ -40,9 +40,10 @@ public:
 
     explicit json_value();
     explicit json_value(const bool &b);
-    explicit json_value(const int &n);
+    json_value(const int &n);
     explicit json_value(const float &f);
-    explicit json_value(const std::string &value);
+    json_value(const std::string &value);
+    json_value(const char *value);
     virtual ~json_value();
 
     json_value &operator =(const json_value &other);
@@ -54,21 +55,23 @@ public:
     float to_float() const;
     bool to_bool() const;
     std::string to_string() const;
-    json_object to_object();
-    json_array to_array();
+    json_object to_object() const;
+    json_array to_array() const;
 
     static json_value null();
 
 protected:
-    type_t _type;
     json_value_data *_data;
 
 private:
-    virtual void render(core::string_renderer &r) const;
+    void render(core::string_renderer &r) const;
 
     friend class json_object;
     friend class json_array;
     friend class json_document;
+    friend class json_value_data;
+    friend class json_object_data;
+    friend class json_array_data;
     friend class tooska::serialization::token_serializer;
     friend class tooska::serialization::token_serializer_writer;
 };
