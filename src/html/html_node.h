@@ -81,6 +81,7 @@ public:
     bool has_attr(const std::string &name);
     std::string data(const std::string &name);
     void set_attr(const std::string &name, const std::string &value);
+    void remove_attr(const std::string &name);
     void add_class(const std::string &name);
     void remove_class(const std::string &name);
     void remove_class(const std::string &name);

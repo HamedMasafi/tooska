@@ -1,6 +1,7 @@
 #ifndef HTML_TAG_VECTOR_H
 #define HTML_TAG_VECTOR_H
 
+#include <functional>
 #include <vector>
 #include <string>
 #include "../global.h"
@@ -22,9 +23,8 @@ public:
 
     html_tag_vector tags() const;
 
-    html_tag *first_or_null();
-    html_tag *last_or_null();
-
+    html_tag *first();
+    html_tag *last();
 
     void for_each(const std::function<void(html_tag*)> &callback);
 };
