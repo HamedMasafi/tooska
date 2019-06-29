@@ -84,7 +84,6 @@ public:
     void remove_attr(const std::string &name);
     void add_class(const std::string &name);
     void remove_class(const std::string &name);
-    void remove_class(const std::string &name);
     bool has_class(const std::string &name) const;
 
     virtual void add_child(html_node *child);

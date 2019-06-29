@@ -384,7 +384,7 @@ void style_tag::add_child(html_node *child)
 void html_tag::remove()
 {
     _parent->remove_child(this);
-    std::for_each(_childs.begin(), _childs.end(), [](html_tag *child){
+    std::for_each(_childs.begin(), _childs.end(), [](html_node *child){
         delete child;
     });
 }
@@ -392,8 +392,8 @@ void html_tag::remove()
 void html_tag::unwrap()
 {
     _parent->remove_child(this);
-    std::for_each(_childs.begin(), _childs.end(), [this](html_tag *child){
-        _parent->add_child(child);
+    std::for_each(_childs.begin(), _childs.end(), [this](html_node *child){
+//        _parent->add_child(child);
     });
 }
 
