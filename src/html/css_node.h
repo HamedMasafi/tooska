@@ -22,6 +22,7 @@ public:
     void set_attr(const std::string &name, const std::string &value);
     void add_selector(const std::string &name);
     bool has_selector(const std::string &name);
+    void clear();
     std::vector<std::string> selectors() const {
         return _selectors;
     }
