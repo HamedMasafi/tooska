@@ -2,6 +2,7 @@
 #include "../core/string_renderer.h"
 #include <wctype.h>
 #include <iostream>
+#include <algorithm>
 
 TOOSKA_BEGIN_NAMESPACE(html)
 
@@ -112,4 +113,18 @@ std::string css_document::to_string(print_type type) const
     return r.to_string();
 }
 
+void css_document::add_node(css_node *node)
+{
+    _nodes.push_back(node);
+}
+
+void css_document::clear()
+{
+    std::for_each(_nodes.begin(), _nodes.end(), [](css_node *node){
+        delete node;
+    });
+    _nodes.clear();
+}
+
 TOOSKA_END_NAMESPACE
+

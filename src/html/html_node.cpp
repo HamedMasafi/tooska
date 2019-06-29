@@ -145,6 +145,21 @@ void html_tag::set_attr(const std::string &name, const std::string &value)
     _attributes[n] = value;
 }
 
+void html_tag::remove_attr(const std::string &name)
+{
+    if (name == "style") {
+        _css->clear();
+        return;
+    } else if (name == "class") {
+        _classes.clear();
+        return;
+    }
+
+    auto i = _attributes.find(name);
+    if (i != _attributes.end())
+        _attributes.erase(i, i);
+}
+
 void html_tag::add_class(const std::string &name)
 {
     if (std::find(_classes.begin(), _classes.end(), name) == _classes.end())
@@ -170,7 +185,7 @@ void html_tag::add_child(html_node *child)
 
 void html_tag::remove_child(html_node *child)
 {
-    _childs.erase(remove(_childs.begin(), _childs.end(), child), _childs.end());
+    _childs.erase(std::remove(_childs.begin(), _childs.end(), child), _childs.end());
 }
 
 std::string html_tag::outter_html()
@@ -364,6 +379,27 @@ void style_tag::add_child(html_node *child)
     } else {
         std::cout << "Appending non-text node to style tag was not allowed";
     }
+}
+
+void html_tag::remove()
+{
+    _parent->remove_child(this);
+    std::for_each(_childs.begin(), _childs.end(), [](html_tag *child){
+        delete child;
+    });
+}
+
+void html_tag::unwrap()
+{
+    _parent->remove_child(this);
+    std::for_each(_childs.begin(), _childs.end(), [this](html_tag *child){
+        _parent->add_child(child);
+    });
+}
+
+void html_tag::unwrap_child(html_tag *child)
+{
+//    auto i = _childs
 }
 
 TOOSKA_END_NAMESPACE

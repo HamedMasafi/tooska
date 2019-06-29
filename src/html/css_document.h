@@ -22,7 +22,8 @@ public:
 
     std::string to_string(print_type type = print_type::compact) const;
     std::vector<css_node *> nodes() const;
-
+    void add_node(css_node *node);
+    void clear();
 private:
     void parse();
 };

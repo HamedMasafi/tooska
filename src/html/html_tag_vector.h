@@ -24,6 +24,9 @@ public:
 
     html_tag *first_or_null();
     html_tag *last_or_null();
+
+
+    void for_each(const std::function<void(html_tag*)> &callback);
 };
 
 TOOSKA_END_NAMESPACE

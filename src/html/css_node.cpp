@@ -105,4 +105,10 @@ bool css_node::has_selector(const std::string &name)
     });
 }
 
+void css_node::clear()
+{
+    _selectors.clear();
+    _rules.clear();
+}
+
 TOOSKA_END_NAMESPACE

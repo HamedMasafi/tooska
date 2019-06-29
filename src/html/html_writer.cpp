@@ -13,13 +13,16 @@ html_writer::html_writer()
 void html_writer::begin_tag(const std::string &tag_name)
 {
     auto tag = new html_tag;
+    tag->setHasCloseTag(true);
     tag->name = tag_name;
+    _tags.top()->add_child(tag);
     _tags.push(tag);
 }
 
 void html_writer::begin_tag(const core::html_tag_type &tag_type)
 {
     auto tag = new html_tag;
+    _tags.top()->add_child(tag);
     tag->name = html_tag_str(tag_type);
     _tags.push(tag);
 }
