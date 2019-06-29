@@ -168,6 +168,12 @@ void html_tag::add_class(const std::string &name)
 
 void html_tag::remove_class(const std::string &name)
 {
+    auto i = _attributes.find(name);
+    _attributes.erase(i, i);
+}
+
+void html_tag::remove_class(const std::string &name)
+{
     _classes.erase(std::remove(_classes.begin(), _classes.end(), name),
                    _classes.end());
 }
@@ -399,7 +405,7 @@ void html_tag::unwrap()
 
 void html_tag::unwrap_child(html_tag *child)
 {
-    auto i = _childs
+//    auto i = _childs
 }
 
 TOOSKA_END_NAMESPACE
