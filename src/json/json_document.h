@@ -7,11 +7,11 @@ TOOSKA_BEGIN_NAMESPACE(json)
 
 class json_object;
 class json_array;
-class json_value;
+class value;
 class json_document : public core::token_parser
 {
     static int token(int n);
-    json_value *_root;
+    value *_root;
 
 public:
     json_document();
@@ -19,7 +19,7 @@ public:
     json_document(json_object *root);
 
     std::string to_string(print_type type = print_type::compact) const;
-    json_value *find(const std::string &path);
+    value *find(const std::string &path);
 
     bool is_array() const;
     bool is_object() const;
@@ -31,8 +31,8 @@ protected:
 
 private:
     void init();
-    json_value *parse_value();
-    json_value *parse_value(const std::string &token);
+    value *parse_value();
+    value *parse_value(const std::string &token);
     json_object *parse_object();
     json_array *parse_array();
 };

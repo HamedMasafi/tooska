@@ -47,7 +47,7 @@ std::string json_document::to_string(print_type type) const
     return r.to_string();
 }
 
-json_value *json_document::find(const std::string &path)
+value *json_document::find(const std::string &path)
 {
     if (!_root)
         return nullptr;
@@ -64,7 +64,7 @@ json_value *json_document::find(const std::string &path)
     std::istringstream f(path);
     std::string s;
 
-    auto get = [](const std::string &q, json_value *v) -> json_value* {
+    auto get = [](const std::string &q, value *v) -> value* {
         auto arr = dynamic_cast<json_array*>(v);
 
         if (arr) {
@@ -82,7 +82,7 @@ json_value *json_document::find(const std::string &path)
 
         return nullptr;
     };
-    json_value *v = _root;
+    value *v = _root;
     while (getline(f, s, '.')) {
         v = get(s, v);
         if (!v)
@@ -96,14 +96,14 @@ bool json_document::is_array() const
 {
     if (!_root)
         return false;
-    return _root->type() == json_value::type_t::array_t;
+    return _root->type() == value::type_t::array_t;
 }
 
 bool json_document::is_object() const
 {
     if (!_root)
         return false;
-    return _root->type() == json_value::type_t::object_t;
+    return _root->type() == value::type_t::object_t;
 }
 
 json_array *json_document::to_array()
@@ -123,7 +123,7 @@ json_object *json_document::to_object()
 json_object *json_document::parse_object()
 {
     json_object *obj = new json_object;
-    json_value *value = nullptr;
+    value *value = nullptr;
     /*
      name       0
      :          1
@@ -229,7 +229,7 @@ void json_document::init()
     _check_fns.push_back(&json_document::token);
 }
 
-json_value *json_document::parse_value(const std::string &token)
+value *json_document::parse_value(const std::string &token)
 {
     if (token == "{")
         return parse_object();
@@ -247,20 +247,20 @@ json_value *json_document::parse_value(const std::string &token)
             print_invalid_token_message(close_quote, begin_quote);
         }
 
-        return new json_value(content);
+        return new value(content);
     } else {
-        json_value *v = nullptr;
+        value *v = nullptr;
         if (token == "null")
-            v = new json_value();
+            v = new value();
         else if (token == "true" || token == "false")
-            v = new json_value(token == "true");
+            v = new value(token == "true");
 
         size_t idx = 0;
         if (!v) {
             try {
                 int n = std::stoi(token, &idx);
                 if (idx == token.length())
-                    v = new json_value(n);
+                    v = new value(n);
             } catch (std::exception ex) { }
         }
 
@@ -268,7 +268,7 @@ json_value *json_document::parse_value(const std::string &token)
             try {
                 float f = std::stof(token, &idx);
                 if (idx == token.length())
-                    v = new json_value(f);
+                    v = new value(f);
             } catch (std::exception ex) { }
         }
 
@@ -282,7 +282,7 @@ json_value *json_document::parse_value(const std::string &token)
     }
 }
 
-json_value *json_document::parse_value()
+value *json_document::parse_value()
 {
     auto token = take_token();
     return parse_value(token);

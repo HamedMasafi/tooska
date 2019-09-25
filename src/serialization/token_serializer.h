@@ -49,7 +49,7 @@ public:
             if (_obj->has_key(name))
                 tooska::core::converter::read(t, _obj->get(name)->to_string());
         } else {
-            json::json_value *v = new json::json_value(t);
+            auto v = new json::value(t);
             v->_s = std::to_string(t);
             _obj->insert(name, v);
         }

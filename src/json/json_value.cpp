@@ -8,32 +8,32 @@
 
 TOOSKA_BEGIN_NAMESPACE(json)
 
-json_value::json_value() : _type(type_t::invalid)
+value::value() : _type(type_t::invalid)
 { }
 
-json_value::json_value(const bool &b) : _b(b), _type(type_t::bool_t)
+value::value(const bool &b) : _b(b), _type(type_t::bool_t)
 { }
 
-json_value::json_value(const int &n) : _n(n), _type(type_t::int_t)
+value::value(const int &n) : _n(n), _type(type_t::int_t)
 { }
 
-json_value::json_value(const float &f) : _f(f), _type(type_t::float_t)
+value::value(const float &f) : _f(f), _type(type_t::float_t)
 { }
 
-json_value::json_value(const std::string &value) : _s(value), _type(type_t::string_t)
+value::value(const std::string &value) : _s(value), _type(type_t::string_t)
 { }
 
-json_value::~json_value()
+value::~value()
 {
 
 }
 
-json_value::type_t json_value::type() const
+value::type_t value::type() const
 {
     return _type;
 }
 
-json_array *json_value::to_array()
+json_array *value::to_array()
 {
     if (_type == type_t::array_t)
         return dynamic_cast<json_array*>(this);
@@ -41,7 +41,7 @@ json_array *json_value::to_array()
         return nullptr;
 }
 
-json_object *json_value::to_object()
+json_object *value::to_object()
 {
     if (_type == type_t::object_t)
         return dynamic_cast<json_object*>(this);
@@ -49,27 +49,27 @@ json_object *json_value::to_object()
         return nullptr;
 }
 
-std::string json_value::to_string() const
+std::string value::to_string() const
 {
     return _s;
 }
 
-float json_value::to_float() const
+float value::to_float() const
 {
     return _f;
 }
 
-bool json_value::to_bool() const
+bool value::to_bool() const
 {
     return _b;
 }
 
-int json_value::to_int() const
+int value::to_int() const
 {
     return _n;
 }
 
-void json_value::render(core::string_renderer &r)
+void value::render(core::string_renderer &r)
 {
     auto val = _s;
 //    bool single_cotation = false;

@@ -6,7 +6,7 @@
 
 TOOSKA_BEGIN_NAMESPACE(json)
 
-json_array::json_array() : json_value()
+json_array::json_array() : value()
 {
     _type = type_t::array_t;
 }
@@ -16,22 +16,22 @@ json_array::~json_array()
 
 }
 
-void json_array::add(json_value *v)
+void json_array::add(value *v)
 {
     _values.push_back(v);
 }
 
-json_value *json_array::at(const size_t &pos) const
+value *json_array::at(const size_t &pos) const
 {
     return _values.at(pos);
 }
 
-const json_value *json_array::operator[](const size_t &i) const
+const value *json_array::operator[](const size_t &i) const
 {
     return _values[i];
 }
 
-json_value *json_array::operator[](const size_t &i)
+value *json_array::operator[](const size_t &i)
 {
     return _values[i];
 }
@@ -43,7 +43,7 @@ void json_array::render(core::string_renderer &r)
         return;
     }
 
-    bool is_simple = std::all_of(_values.begin(), _values.end(), [](json_value *v){
+    bool is_simple = std::all_of(_values.begin(), _values.end(), [](value *v){
             auto t = v->type();
             return t == type_t::int_t || t == type_t::float_t || t == type_t::string_t;
     });
@@ -71,7 +71,7 @@ void json_array::render(core::string_renderer &r)
     r.append("]");
 }
 
-void json_array::for_each(const std::function<void (json_value *)> &callback)
+void json_array::for_each(const std::function<void (value *)> &callback)
 {
     std::for_each(_values.begin(), _values.end(), callback);
 }

@@ -7,15 +7,15 @@
 
 TOOSKA_BEGIN_NAMESPACE(json)
 
-json_object::json_object() : json_value ()
+json_object::json_object() : value ()
 {
     _type = type_t::object_t;
 }
 
-json_object::json_object(std::initializer_list<std::pair<std::string, json_value> > args)
+json_object::json_object(std::initializer_list<std::pair<std::string, value> > args)
 {
     _type = type_t::object_t;
-    std::initializer_list<std::pair<std::string, json_value> >::const_iterator i;
+    std::initializer_list<std::pair<std::string, value> >::const_iterator i;
     for (i = args.begin(); i != args.end(); ++i) {
 //        insert(i->first, &i->second);
     }
@@ -26,7 +26,7 @@ json_object::~json_object()
 
 }
 
-void json_object::insert(const std::string &name, json_value *value)
+void json_object::insert(const std::string &name, value *value)
 {
     _values[name] = value;
 }
@@ -36,12 +36,12 @@ bool json_object::has_key(const std::string &name)
     return _values.find(name) != _values.end();
 }
 
-json_value *json_object::get(const std::string &name)
+value *json_object::get(const std::string &name)
 {
     return _values[name];
 }
 
-json_value *json_object::operator[](const std::string &name)
+value *json_object::operator[](const std::string &name)
 {
     return _values[name];
 }
@@ -51,7 +51,7 @@ void json_object::render(core::string_renderer &r)
 
     auto count = _values.size();
 
-    bool is_simple = std::all_of(_values.begin(), _values.end(), [](std::map<std::string, json_value*>::const_reference it){
+    bool is_simple = std::all_of(_values.begin(), _values.end(), [](std::map<std::string, value*>::const_reference it){
             auto t = it.second->type();
             return t == type_t::int_t || t == type_t::float_t || t == type_t::string_t;
 }) && count < 3;
