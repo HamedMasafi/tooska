@@ -41,7 +41,7 @@ public:
     SERIALIZATION_BLOCK {
         FIELD(s)
         FIELD(n)
-        FIELD(f)
+//        FIELD(f)
         FIELD(child)
     }
 
@@ -54,7 +54,7 @@ public:
 };
 
 void test_serialization() {
-    tooska::json::json_document j;
+    tooska::json::document j;
 
     j.set_text(R"({
                n:4,
@@ -67,9 +67,9 @@ void test_serialization() {
                }
                }\n)");
 
-    tooska::serialization::json_token_serializer tt;
-    int n;
-    tt.set<int>("s", n);
+//    tooska::serialization::json_token_serializer tt;
+//    int n;
+//    tt.set<int>("s", n);
 
     serializable_test t;
     tooska::serialization::json_serializer ser;

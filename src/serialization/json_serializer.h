@@ -9,7 +9,7 @@
 #include "../json/json_array.h"
 
 TOOSKA_BEGIN_NAMESPACE(json)
-class json_document;
+class document;
 TOOSKA_END_NAMESPACE
 
 TOOSKA_BEGIN_NAMESPACE(serialization)
@@ -21,28 +21,28 @@ public:
     json_serializer();
 
 
-    tooska::json::json_document *serialize(serializable* obj) const
+    tooska::json::document *serialize(serializable* obj) const
     {
-        serializer<tooska::json::json_object> w;
-        obj->serialize(&w);
-        return new tooska::json::json_document(w.obj());
+//        json_token_serializer w;
+//        obj->serialize(&w);
+        return new tooska::json::document();//w.obj());
     }
 
-    void deserialize(tooska::json::json_document &doc, serializable *obj) const
+    void deserialize(tooska::json::document &doc, serializable *obj) const
     {
-        serializer<tooska::json::json_object> w(doc.to_object());
-        obj->serialize(&w);
+//        json_token_serializer w(doc.to_object());
+//        obj->serialize(&w);
     }
 
-    tooska::json::json_document *serialize(std::vector<serializable*> obj) const
+    tooska::json::document *serialize(std::vector<serializable*> obj) const
     {
 //        token_serializer w;
 //        obj->serialize(&w);
-        return new tooska::json::json_document();//w.obj());
+        return new tooska::json::document();//w.obj());
     }
 
     template<class T>
-    void deserialize(tooska::json::json_array *arr, std::vector<T*> &obj) const
+    void deserialize(tooska::json::array *arr, std::vector<T*> &obj) const
     {
         arr->for_each([&](tooska::json::value *v){
             token_serializer w(v->to_object());

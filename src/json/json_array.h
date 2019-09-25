@@ -11,13 +11,13 @@ class string_renderer;
 TOOSKA_END_NAMESPACE
 
 TOOSKA_BEGIN_NAMESPACE(json)
-class json_array : public value
+class array : public value
 {
     std::vector<value*> _values;
 
 public:
-    json_array();
-    virtual ~json_array();
+    array();
+    virtual ~array();
     void add(value *v);
     value *at(const size_t &pos) const;
 

@@ -6,7 +6,7 @@
 #include "test.h"
 
 void test_json() {
-    tooska::json::json_document _json;
+    tooska::json::document _json;
 
     auto json_text = R"~(
                      {

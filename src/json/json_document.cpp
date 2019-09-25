@@ -12,7 +12,7 @@
 
 TOOSKA_BEGIN_NAMESPACE(json)
 
-int json_document::token(int n)
+int document::token(int n)
 {
     return isprint(n)
             && n != '{' && n != '}'
@@ -20,24 +20,24 @@ int json_document::token(int n)
             && n != ':' && n != ';' && n != ',' && n != ' ';
 }
 
-json_document::json_document() : token_parser(), _root(nullptr)
+document::document() : token_parser(), _root(nullptr)
 {
     this->init();
 }
 
-json_document::json_document(json_array *root)
+document::document(array *root)
  : token_parser(), _root(root)
 {
     init();
 }
 
-json_document::json_document(json_object *root)
+document::document(object *root)
  : token_parser(), _root(root)
 {
     init();
 }
 
-std::string json_document::to_string(print_type type) const
+std::string document::to_string(print_type type) const
 {
     if (!_root)
         return "{}";
@@ -47,7 +47,7 @@ std::string json_document::to_string(print_type type) const
     return r.to_string();
 }
 
-value *json_document::find(const std::string &path)
+value *document::find(const std::string &path)
 {
     if (!_root)
         return nullptr;
@@ -65,7 +65,7 @@ value *json_document::find(const std::string &path)
     std::string s;
 
     auto get = [](const std::string &q, value *v) -> value* {
-        auto arr = dynamic_cast<json_array*>(v);
+        auto arr = dynamic_cast<array*>(v);
 
         if (arr) {
             if (!core::string_helper::is_integer(q)) {
@@ -75,7 +75,7 @@ value *json_document::find(const std::string &path)
             return arr->at(static_cast<size_t>(std::stoi(q)));
         }
 
-        auto obj = dynamic_cast<json_object*>(v);
+        auto obj = dynamic_cast<object*>(v);
 
         if (obj)
             return obj->get(q);
@@ -92,37 +92,37 @@ value *json_document::find(const std::string &path)
     return v;
 }
 
-bool json_document::is_array() const
+bool document::is_array() const
 {
     if (!_root)
         return false;
     return _root->type() == value::type_t::array_t;
 }
 
-bool json_document::is_object() const
+bool document::is_object() const
 {
     if (!_root)
         return false;
     return _root->type() == value::type_t::object_t;
 }
 
-json_array *json_document::to_array()
+array *document::to_array()
 {
     if (!_root)
         return nullptr;
     return _root->to_array();
 }
 
-json_object *json_document::to_object()
+object *document::to_object()
 {
     if (!_root)
         return nullptr;
     return _root->to_object();
 }
 
-json_object *json_document::parse_object()
+object *document::parse_object()
 {
-    json_object *obj = new json_object;
+    object *obj = new object;
     value *value = nullptr;
     /*
      name       0
@@ -189,10 +189,10 @@ json_object *json_document::parse_object()
     return obj;
 }
 
-json_array *json_document::parse_array()
+array *document::parse_array()
 {
     int step = 0;
-    auto arr = new json_array;
+    auto arr = new array;
     while (true) {
         auto token = take_token();
         if (token.empty())
@@ -215,21 +215,21 @@ json_array *json_document::parse_array()
     return arr;
 }
 
-void json_document::parse()
+void document::parse()
 {
     _root = parse_value();
 }
 
-void json_document::init()
+void document::init()
 {
     _literals.push_back(new literal_t{"/*", "*/", "", false, false});
     _literals.push_back(new literal_t{"'", "'", "", true, true});
     _literals.push_back(new literal_t{"\"", "\"", "\\\"", true, true});
 
-    _check_fns.push_back(&json_document::token);
+    _check_fns.push_back(&document::token);
 }
 
-value *json_document::parse_value(const std::string &token)
+value *document::parse_value(const std::string &token)
 {
     if (token == "{")
         return parse_object();
@@ -282,7 +282,7 @@ value *json_document::parse_value(const std::string &token)
     }
 }
 
-value *json_document::parse_value()
+value *document::parse_value()
 {
     auto token = take_token();
     return parse_value(token);

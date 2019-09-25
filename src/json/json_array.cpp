@@ -6,37 +6,37 @@
 
 TOOSKA_BEGIN_NAMESPACE(json)
 
-json_array::json_array() : value()
+array::array() : value()
 {
     _type = type_t::array_t;
 }
 
-json_array::~json_array()
+array::~array()
 {
 
 }
 
-void json_array::add(value *v)
+void array::add(value *v)
 {
     _values.push_back(v);
 }
 
-value *json_array::at(const size_t &pos) const
+value *array::at(const size_t &pos) const
 {
     return _values.at(pos);
 }
 
-const value *json_array::operator[](const size_t &i) const
+const value *array::operator[](const size_t &i) const
 {
     return _values[i];
 }
 
-value *json_array::operator[](const size_t &i)
+value *array::operator[](const size_t &i)
 {
     return _values[i];
 }
 
-void json_array::render(core::string_renderer &r)
+void array::render(core::string_renderer &r)
 {
     if (!_values.size()) {
         r.append("[]");
@@ -71,7 +71,7 @@ void json_array::render(core::string_renderer &r)
     r.append("]");
 }
 
-void json_array::for_each(const std::function<void (value *)> &callback)
+void array::for_each(const std::function<void (value *)> &callback)
 {
     std::for_each(_values.begin(), _values.end(), callback);
 }

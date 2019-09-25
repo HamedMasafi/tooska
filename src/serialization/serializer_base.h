@@ -21,7 +21,6 @@
     x(unsigned long) \
     x(unsigned long long) \
     x(std::string) \
-    x(std::wstring) \
     x(long double) \
     x(double)
 
@@ -39,20 +38,55 @@ public:
     serializer_base(mode_t mode) : mode(mode)
     {}
 
-#define x(type) void set(const std::string &name, const type &value) {}
+#define x(type) virtual void set(const std::string &name, type &value) = 0;
     FOR_EACH_TYPES(x)
 #undef x
 
-    void set(const std::string &name, serializable *object)
-    {}
+    virtual void set(const std::string &name, serializable *object) = 0;
 };
 
-template<class N>
+template<class C, class N>
 class serializer : public serializer_base
 {
 public:
     serializer() : serializer_base(Unset)
     {}
+};
+
+template<class T>
+class abstract_serializer
+{
+public:
+    virtual std::string serialize(T *object) const = 0;
+    virtual std::string serialize_array(const std::vector<T*> &object) const = 0;
+    virtual T *deserialize(const std::string &data) const = 0;
+    virtual std::vector<T*> deserialize_array(const std::string &data) const = 0;
+};
+
+template<class T>
+class json_object_serializer : public abstract_serializer<T>
+{
+    json::object *object;
+
+public:
+    std::string serialize(T *object) const override
+    {
+        object->serialize(this);
+    }
+    std::string serialize_array(const std::vector<T*> &object) const override
+    {
+
+    }
+    T *deserialize(const std::string &data) const override
+    {
+        auto t = new T;
+        t->serialize(this);
+        return t;
+    }
+    std::vector<T*> deserialize_array(const std::string &data) const override
+    {
+
+    }
 };
 
 TOOSKA_END_NAMESPACE

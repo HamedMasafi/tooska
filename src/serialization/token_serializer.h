@@ -38,9 +38,9 @@ public:
         deserialize,
         serialize
     } mode;
-    json::json_object *_obj;
+    json::object *_obj;
     token_serializer();
-    token_serializer(json::json_object *obj);
+    token_serializer(json::object *obj);
 
     template<typename T>
     void set(const std::string &name, T &t)
@@ -65,20 +65,20 @@ public:
             return;
         }
 
-//        if (mode == deserialize) {
-//            if (t)
-//                delete t;
-//            t = new T;
-//            serializable *s = dynamic_cast<serializable*>(t);
-//            auto obj = _obj->get(name)->to_object();
-//            token_serializer w(obj);
+        if (mode == deserialize) {
+            if (t)
+                delete t;
+            t = new T;
+            serializable *s = dynamic_cast<serializable*>(t);
+            auto obj = _obj->get(name)->to_object();
+            token_serializer w(obj);
 //            s->serialize(&w);
-//        } else {
-//            serializable *s = dynamic_cast<serializable*>(t);
-//            token_serializer w;
+        } else {
+            serializable *s = dynamic_cast<serializable*>(t);
+            token_serializer w;
 //            s->serialize(&w);
-//            _obj->insert(name, w._obj);
-//        }
+            _obj->insert(name, w._obj);
+        }
     }
 };
 /*

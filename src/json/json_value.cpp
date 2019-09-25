@@ -33,18 +33,18 @@ value::type_t value::type() const
     return _type;
 }
 
-json_array *value::to_array()
+array *value::to_array()
 {
     if (_type == type_t::array_t)
-        return dynamic_cast<json_array*>(this);
+        return dynamic_cast<array*>(this);
     else
         return nullptr;
 }
 
-json_object *value::to_object()
+object *value::to_object()
 {
     if (_type == type_t::object_t)
-        return dynamic_cast<json_object*>(this);
+        return dynamic_cast<object*>(this);
     else
         return nullptr;
 }

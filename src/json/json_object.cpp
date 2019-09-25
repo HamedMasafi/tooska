@@ -7,12 +7,12 @@
 
 TOOSKA_BEGIN_NAMESPACE(json)
 
-json_object::json_object() : value ()
+object::object() : value ()
 {
     _type = type_t::object_t;
 }
 
-json_object::json_object(std::initializer_list<std::pair<std::string, value> > args)
+object::object(std::initializer_list<std::pair<std::string, value> > args)
 {
     _type = type_t::object_t;
     std::initializer_list<std::pair<std::string, value> >::const_iterator i;
@@ -21,32 +21,32 @@ json_object::json_object(std::initializer_list<std::pair<std::string, value> > a
     }
 }
 
-json_object::~json_object()
+object::~object()
 {
 
 }
 
-void json_object::insert(const std::string &name, value *value)
+void object::insert(const std::string &name, value *value)
 {
     _values[name] = value;
 }
 
-bool json_object::has_key(const std::string &name)
+bool object::has_key(const std::string &name)
 {
     return _values.find(name) != _values.end();
 }
 
-value *json_object::get(const std::string &name)
+value *object::get(const std::string &name)
 {
     return _values[name];
 }
 
-value *json_object::operator[](const std::string &name)
+value *object::operator[](const std::string &name)
 {
     return _values[name];
 }
 
-void json_object::render(core::string_renderer &r)
+void object::render(core::string_renderer &r)
 {
 
     auto count = _values.size();

@@ -8,16 +8,17 @@
 #include "test_json.h"
 #include "test_serialization.h"
 #include "test_soap.h"
+#include "test_temp.h"
 
 int main() {
     START();
 
+//    RUN_TEST(temp);
 //    RUN_TEST(html);
 //    RUN_TEST(css);
 //    RUN_TEST(json);
     RUN_TEST(serialization);
-    RUN_TEST(soap);
-
+//    RUN_TEST(soap);
     PASSED();
 }
 
