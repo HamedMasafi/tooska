@@ -2,12 +2,9 @@
 
 #include "converter.h"
 
-TOOSKA_BEGIN_NAMESPACE(serialization)
+TOOSKA_BEGIN_NAMESPACE(core)
 
-//converter()
-//{
-
-//}
+namespace converter {
 
 template<typename T>
 void read(T &t, const std::string &value)
@@ -121,6 +118,7 @@ template<>
 void write(const std::string &d, std::string &s)
 {
     s = d;
+}
 }
 
 TOOSKA_END_NAMESPACE

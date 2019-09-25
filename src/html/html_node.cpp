@@ -366,5 +366,9 @@ void style_tag::add_child(html_node *child)
     }
 }
 
-TOOSKA_END_NAMESPACE
+std::map<std::string, std::string> html_tag::attributes() const
+{
+    return _attributes;
+}
 
+TOOSKA_END_NAMESPACE

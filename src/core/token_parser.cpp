@@ -158,13 +158,27 @@ bool token_parser::is_valid_token(const string &token) const
 
 string token_parser::take_token()
 {
-    if (_token_it == _tokens.end())
+    if (_token_it == _tokens.end()) {
+//        std::cout << "No token avaible" << std::endl;
         return std::string();
+    }
 
     auto ret = *_token_it;
-//    std::cout << "Token selected: " << ret << std::endl;
+
     ++_token_it;
     return ret;
+}
+
+string token_parser::next_token(int space)
+{
+    if (_token_it == _tokens.end() || (_token_it + space) == _tokens.end())
+        return std::string();
+    return *(_token_it + space);
+}
+
+string token_parser::put_token()
+{
+    --_token_it;
 }
 
 TOOSKA_END_NAMESPACE

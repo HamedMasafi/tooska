@@ -87,10 +87,16 @@ string string_helper::trim_copy(string s) {
 
 
 bool string_helper::replace(string& str, const string& from, const string& to) {
-    size_t start_pos = str.find(from);
-    if(start_pos == string::npos)
-        return false;
-    str.replace(start_pos, from.length(), to);
+//    size_t start_pos = str.find(from);
+//    if(start_pos == string::npos)
+//        return false;
+//    str.replace(start_pos, from.length(), to);
+//    return true;
+    size_t start_pos = 0;
+    while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+    }
     return true;
 }
 
@@ -102,6 +108,11 @@ vector<string> string_helper::split(string str, const char &sep)
     while(getline(wss, temp, sep))
         parts.push_back(temp);
     return parts;
+}
+
+bool string_helper::starts_width(string &str, string &substr)
+{
+    return str.rfind(substr) == 0;
 }
 
 TOOSKA_END_NAMESPACE

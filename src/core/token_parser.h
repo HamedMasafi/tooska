@@ -66,6 +66,8 @@ protected:
     std::string read_until(const std::string &text, size_t &i, const literal_t *lt) const;
     bool is_valid_token(const std::string &token) const;
     std::string take_token();
+    std::string next_token(int space = 0);
+    std::string put_token();
 };
 
 TOOSKA_END_NAMESPACE

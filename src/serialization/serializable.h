@@ -6,9 +6,12 @@
 #include <iostream>
 #include "../json/json_object.h"
 
+
 TOOSKA_BEGIN_NAMESPACE(serialization)
 
-class token_serializer;
+class serializer_base;
+
+/*
 struct serialize_rule_base;
 struct serialize_rule_base
 {
@@ -52,9 +55,17 @@ constexpr serialize_rule<T2> operator &(serialize_rule<T1> &&l, serialize_rule<T
     std::cout << "operator & : " << l.name << " & " << r.name << std::endl;
     return r;
 }
-#define BEGIN_SERIALIZATION_BLOCK(name) void name::serialize(tooska::serialization::token_serializer *t) {
+*/
+
+//TOOSKA_BEGIN_NAMESPACE(serialization)
+//template<class T>
+//class serializer;
+//TOOSKA_END_NAMESPACE
+
+#define SERIALIZATION_BLOCK void serialize(tooska::serialization::serializer_base *t)
 #define FIELD(name)    t->set(#name, name);
-#define END_SERIALIZATION_BLOCK() }
+//#define BEGIN_SERIALIZATION_BLOCK template<class T> void serialize(T *t) {
+//#define END_SERIALIZATION_BLOCK }
 
 class serializable
 {
@@ -63,36 +74,8 @@ public:
     virtual ~serializable() = default;
 
 //    virtual const serialize_rule_base rule() = 0;
-    virtual void serialize(token_serializer *t) = 0;
+    virtual void serialize(serializer_base *t) = 0;
 };
-
-//class json_serializer
-//{
-//public:
-//    void deserialize(tooska::json::json_object *json, serializable *obj)
-//    {
-//        auto r = obj->rule();
-
-//        serialize_rule_base *b = &r;
-//        do {
-//            std::cout << "next is: " << b->name << std::endl;
-//            b->write(json->get(b->name)->to_string());
-//            b = b->next;
-//        } while (b->next);
-//    }
-
-//    void serialize(tooska::json::json_object *json, serializable *obj)
-//    {
-//        auto r = obj->rule();
-
-//        serialize_rule_base *b = &r;
-//        do {
-//            json->get(b->name);
-//            std::cout << "next is: " << b->name << std::endl;
-//            b = b->next;
-//        } while (b->next);
-//    }
-//};
 
 TOOSKA_END_NAMESPACE
 

@@ -101,6 +101,8 @@ public:
 
     std::string to_string(print_type type = print_type::compact);
 
+    std::map<std::string, std::string> attributes() const;
+
 private:
     void append(core::string_renderer &r) override;
     void append_begin_tag(core::string_renderer &r);

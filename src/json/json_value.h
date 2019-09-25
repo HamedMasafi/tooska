@@ -21,9 +21,9 @@ class json_value
     int _n;
     float _f;
     bool _b;
-    std::string _s;
 
 public:
+    std::string _s;
     enum class type_t{
         invalid,
         bool_t,

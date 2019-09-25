@@ -2,7 +2,7 @@
 #define TOKEN_SERIALIZER_H
 
 #include "../global.h"
-#include "converter.h"
+#include "../core/converter.h"
 #include "serializable.h"
 #include "../json/json_object.h"
 #include "../json/json_value.h"
@@ -47,7 +47,7 @@ public:
     {
         if (mode == deserialize) {
             if (_obj->has_key(name))
-                read(t, _obj->get(name)->to_string());
+                tooska::core::converter::read(t, _obj->get(name)->to_string());
         } else {
             json::json_value *v = new json::json_value(t);
             v->_s = std::to_string(t);
@@ -65,23 +65,23 @@ public:
             return;
         }
 
-        if (mode == deserialize) {
-            if (t)
-                delete t;
-            t = new T;
-            serializable *s = dynamic_cast<serializable*>(t);
-            auto obj = _obj->get(name)->to_object();
-            token_serializer w(obj);
-            s->serialize(&w);
-        } else {
-            serializable *s = dynamic_cast<serializable*>(t);
-            token_serializer w;
-            s->serialize(&w);
-            _obj->insert(name, w._obj);
-        }
+//        if (mode == deserialize) {
+//            if (t)
+//                delete t;
+//            t = new T;
+//            serializable *s = dynamic_cast<serializable*>(t);
+//            auto obj = _obj->get(name)->to_object();
+//            token_serializer w(obj);
+//            s->serialize(&w);
+//        } else {
+//            serializable *s = dynamic_cast<serializable*>(t);
+//            token_serializer w;
+//            s->serialize(&w);
+//            _obj->insert(name, w._obj);
+//        }
     }
 };
-
+/*
 class token_serializer_reader : public token_serializer
 {
 public:
@@ -141,7 +141,7 @@ public:
         _obj->insert(name, w._obj);
     }
 };
-
+*/
 TOOSKA_END_NAMESPACE
 
 #endif // TOKEN_SERIALIZER_H

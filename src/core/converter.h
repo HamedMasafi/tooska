@@ -3,17 +3,10 @@
 
 #include "../global.h"
 
-TOOSKA_BEGIN_NAMESPACE(serialization)
+TOOSKA_BEGIN_NAMESPACE(core)
 
-
-template<typename T>
-class converter
+namespace converter
 {
-public:
-    void read(T &t)
-    {}
-};
-
 //read
 template<typename T>
 void read(T &t, const std::string &value);
@@ -59,5 +52,7 @@ template<>
 void write(const std::string &d, std::string &s);
 
 TOOSKA_END_NAMESPACE
+
+}
 
 #endif // CONVERTER_H

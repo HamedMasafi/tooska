@@ -4,7 +4,7 @@
 #include <vector>
 #include "../global.h"
 #include "serializable.h"
-#include "token_serializer.h"
+#include "json_token_serializer.h"
 #include "../json/json_document.h"
 #include "../json/json_array.h"
 
@@ -23,22 +23,22 @@ public:
 
     tooska::json::json_document *serialize(serializable* obj) const
     {
-        token_serializer w;
+        serializer<tooska::json::json_object> w;
         obj->serialize(&w);
-        return new tooska::json::json_document(w._obj);
+        return new tooska::json::json_document(w.obj());
     }
 
     void deserialize(tooska::json::json_document &doc, serializable *obj) const
     {
-        token_serializer w(doc.to_object());
+        serializer<tooska::json::json_object> w(doc.to_object());
         obj->serialize(&w);
     }
 
     tooska::json::json_document *serialize(std::vector<serializable*> obj) const
     {
-        token_serializer w;
-        //    obj->serialize(&w);
-        return new tooska::json::json_document(w._obj);
+//        token_serializer w;
+//        obj->serialize(&w);
+        return new tooska::json::json_document();//w.obj());
     }
 
     template<class T>
