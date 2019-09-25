@@ -81,6 +81,7 @@ public:
     bool has_attr(const std::string &name);
     std::string data(const std::string &name);
     void set_attr(const std::string &name, const std::string &value);
+    void remove_attr(const std::string &name);
     void add_class(const std::string &name);
     void remove_class(const std::string &name);
     bool has_class(const std::string &name) const;
@@ -100,6 +101,9 @@ public:
     html_tag_vector find(std::function<bool(html_tag*)> &check);
 
     std::string to_string(print_type type = print_type::compact);
+    void remove();
+    void unwrap();
+    void unwrap_child(html_tag *child);
 
     std::map<std::string, std::string> attributes() const;
 

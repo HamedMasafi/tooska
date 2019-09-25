@@ -61,14 +61,19 @@ html_tag_vector html_tag_vector::tags() const
     return vec;
 }
 
-html_tag *html_tag_vector::first_or_null()
+html_tag *html_tag_vector::first()
 {
     return size() ? at(0) : nullptr;
 }
 
-html_tag *html_tag_vector::last_or_null()
+html_tag *html_tag_vector::last()
 {
     return size() ? at(size() - 1) : nullptr;
+}
+
+void html_tag_vector::for_each(const std::function<void (html_tag *)> &callback)
+{
+    std::for_each(begin(), end(), callback);
 }
 
 TOOSKA_END_NAMESPACE
