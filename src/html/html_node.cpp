@@ -381,13 +381,11 @@ void style_tag::add_child(html_node *child)
     }
 }
 
-<<<<<<< HEAD
 std::map<std::string, std::string> html_tag::attributes() const
 {
     return _attributes;
 }
 
-=======
 void html_tag::remove()
 {
     _parent->remove_child(this);
@@ -409,5 +407,4 @@ void html_tag::unwrap_child(html_tag *child)
 //    auto i = _childs
 }
 
->>>>>>> 2f37992f804c6ac7327bcd9f42795dd00a26b78d
 TOOSKA_END_NAMESPACE

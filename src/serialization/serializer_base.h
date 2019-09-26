@@ -42,7 +42,15 @@ public:
     FOR_EACH_TYPES(x)
 #undef x
 
-    virtual void set(const std::string &name, serializable *object) = 0;
+    virtual void set(const std::string &name, serializable *object) {
+        auto t = create_object();
+        t->serialize(this);
+    }
+
+    virtual serializable *create_object() const
+    {
+        return nullptr;
+    }
 };
 
 template<class C, class N>
