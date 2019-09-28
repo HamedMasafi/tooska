@@ -55,7 +55,7 @@ bool wsdl_parser::read_type(tooska::xml::node *n)
     if (complexType.size() == 1) {
         auto t = new complex_type;
         t->name = n->attr("name");
-        auto elements = complexType.first_or_null()->find("element");
+        auto elements = complexType.first()->find("element");
         for (auto el: elements) {
             t->types[el->attr("name")] = el->attr("type");
         }

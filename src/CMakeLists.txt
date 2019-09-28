@@ -1,4 +1,4 @@
-file(GLOB SOURCES "core/*.cpp" "html/*.cpp" "json/*.cpp" "serialization/*.cpp" "soap/*.cpp" "xml/*.cpp")
+file(GLOB SOURCES "core/*.cpp" "html/*.cpp" "json/*.cpp" "soap/*.cpp" "xml/*.cpp" "wipserialization/*.cpp")
 #add_subdirectory(core)
 #add_subdirectory(html)
 #add_subdirectory(json)

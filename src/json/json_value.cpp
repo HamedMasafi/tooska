@@ -8,20 +8,20 @@
 
 TOOSKA_BEGIN_NAMESPACE(json)
 
-value::value() : _type(type_t::invalid)
+value::value() : _type(type_t::invalid), _data()
 { }
 
-value::value(const bool &b) : _b(b), _type(type_t::bool_t)
-{ }
-
-value::value(const int &n) : _n(n), _type(type_t::int_t)
-{ }
-
-value::value(const float &f) : _f(f), _type(type_t::float_t)
-{ }
-
-value::value(const std::string &value) : _s(value), _type(type_t::string_t)
-{ }
+value::value(const tooska::core::variant &value) : _data(value)
+{
+    if (value.is_integral())
+        _type = type_t::int_t;
+    else if (value.is_floating_point())
+        _type = type_t::float_t;
+    else if (value.type() == tooska::core::variant::string_t)
+        _type = type_t::string_t;
+    else
+        _type = type_t::invalid;
+}
 
 value::~value()
 {
@@ -51,65 +51,48 @@ object *value::to_object()
 
 std::string value::to_string() const
 {
-    return _s;
+    return _data.to_string();
 }
 
 float value::to_float() const
 {
-    return _f;
+    return _data.to_float();
 }
 
 bool value::to_bool() const
 {
-    return _b;
+    return _data.to_bool();
 }
 
 int value::to_int() const
 {
-    return _n;
+    return _data.to_int();
 }
 
 void value::render(core::string_renderer &r)
 {
     auto val = _s;
-//    bool single_cotation = false;
-//    bool double_cotation = false;
-//    std::for_each(val.begin(), val.end(), [&](int ch){
-//        if (ch == '\'')
-//            single_cotation = true;
-//        if (ch == '"')
-//            double_cotation = true;
-//    });
+    core::string_helper::replace(val, "\"", "\\\"");
 
-//    if (single_cotation && double_cotation)
-        core::string_helper::replace(val, "\"", "\\\"");
-
-    switch (_type) {
-    case type_t::string_t:
-        r.append("\"");
-        r.append(val);
-        r.append("\"");
-        break;
-
-    case type_t::invalid:
+    switch (_data.type()) {
+    case tooska::core::variant::invalid:
         r.append("null");
         break;
-
-    case type_t::bool_t:
-        r.append(_b ? "true" : "false");
+    case tooska::core::variant::string_t:
+        r.append("\"");
+        r.append(_data.to_string());
+        r.append("\"");
         break;
-
-    case type_t::int_t:
-        r.append(std::to_string(_n));
-        break;
-
-    case type_t::float_t:
-        r.append(std::to_string(_f));
-        break;
-
     default:
-        r.append("INVALID");
+        r.append(_data.to_string());
+        break;
     }
 }
 
+tooska::core::variant value::data() const
+{
+    return _data;
+}
+
 TOOSKA_END_NAMESPACE
+

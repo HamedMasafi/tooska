@@ -16,14 +16,15 @@ void read(T &t, const std::string &value)
 template<>
 void read<int>(int &n, const std::string &s)
 {
-    try {
-        std::size_t i;
-        int b = std::stoi(s, &i);
-        if (i == s.length())
-            n = b;
-    } catch (std::exception ex) {
-        std::cout << "invalid int from " << s << std::endl;
-    }
+    n = std::atoi(s.c_str());
+//    try {
+//        std::size_t i;
+//        int b = std::stoi(s, &i);
+//        if (i == s.length())
+//            n = b;
+//    } catch (std::exception ex) {
+//        std::cout << "invalid int from " << s << std::endl;
+//    }
 }
 
 template<>

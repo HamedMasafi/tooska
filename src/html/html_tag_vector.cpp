@@ -6,7 +6,7 @@
 
 TOOSKA_BEGIN_NAMESPACE(html)
 
-html_tag_vector::html_tag_vector() : std::vector<html_tag*>()
+html_tag_vector::html_tag_vector() : tooska::core::nodes_vector<html_tag>()
 {
 
 }
@@ -25,13 +25,13 @@ void html_tag_vector::remove_class(const std::string &cls)
     });
 }
 
-void html_tag_vector::remove_all()
-{
-    std::for_each(begin(), end(), [&](html_tag *tag){
-        delete tag;
-    });
-    clear();
-}
+//void html_tag_vector::remove_all()
+//{
+//    std::for_each(begin(), end(), [&](html_tag *tag){
+//        delete tag;
+//    });
+//    clear();
+//}
 
 html_tag_vector html_tag_vector::find(const std::string &query)
 {
@@ -61,19 +61,19 @@ html_tag_vector html_tag_vector::tags() const
     return vec;
 }
 
-html_tag *html_tag_vector::first()
-{
-    return size() ? at(0) : nullptr;
-}
+//html_tag *html_tag_vector::first()
+//{
+//    return size() ? at(0) : nullptr;
+//}
 
-html_tag *html_tag_vector::last()
-{
-    return size() ? at(size() - 1) : nullptr;
-}
+//html_tag *html_tag_vector::last()
+//{
+//    return size() ? at(size() - 1) : nullptr;
+//}
 
-void html_tag_vector::for_each(const std::function<void (html_tag *)> &callback)
-{
-    std::for_each(begin(), end(), callback);
-}
+//void html_tag_vector::for_each(const std::function<void (html_tag *)> &callback)
+//{
+//    std::for_each(begin(), end(), callback);
+//}
 
 TOOSKA_END_NAMESPACE

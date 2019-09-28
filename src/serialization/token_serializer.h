@@ -8,12 +8,12 @@
 #include "../json/json_value.h"
 #include "../json/json_document.h"
 
-namespace std {
-    inline string to_string(string __val)
-    {
-        return __val;
-    }
-}
+//namespace std {
+//    inline string to_string(string __val)
+//    {
+//        return __val;
+//    }
+//}
 
 template<typename>
 struct __is_serializable_object_helper

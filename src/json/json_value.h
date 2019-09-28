@@ -2,6 +2,7 @@
 #define JSON_VALUE_H
 
 #include "../global.h"
+#include "../core/variant.h"
 #include <type_traits>
 
 #include <string>
@@ -21,9 +22,7 @@ class object;
 
 class value
 {
-    int _n;
-    float _f;
-    bool _b;
+    tooska::core::variant _data;
 
 public:
     std::string _s;
@@ -37,32 +36,18 @@ public:
         array_t
     };
     value();
-    value(const bool &b);
-    value(const int &n);
-    value(const float &f);
-    value(const std::string &value);
+    value(const tooska::core::variant &value);
     virtual ~value();
 
     type_t type() const;
 
+    tooska::core::variant data() const;
     int to_int() const;
     float to_float() const;
     bool to_bool() const;
     std::string to_string() const;
     object *to_object();
     array *to_array();
-
-    //    template<class T>
-    //    T to();
-
-    //    template<>
-    //    int to<int>();
-
-    //    template<>
-    //    float to<float>();
-
-    //    template<>
-    //    std::string to<std::string>();
 
 protected:
     type_t _type;

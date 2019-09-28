@@ -1,9 +1,8 @@
-#include "json_serializer.h"
-
+#include "serializer_base.h"
 
 TOOSKA_BEGIN_NAMESPACE(serialization)
 
-json_serializer2::json_serializer2()
+serializer_base::serializer_base()
 {
 
 }

@@ -15,10 +15,10 @@ TOOSKA_END_NAMESPACE
 TOOSKA_BEGIN_NAMESPACE(serialization)
 
 class serializable;
-class json_serializer
+class json_serializer2
 {
 public:
-    json_serializer();
+    json_serializer2();
 
 
     tooska::json::document *serialize(serializable* obj) const
