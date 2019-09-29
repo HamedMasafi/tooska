@@ -71,8 +71,8 @@ int value::to_int() const
 
 void value::render(core::string_renderer &r)
 {
-    auto val = _s;
-    core::string_helper::replace(val, "\"", "\\\"");
+//    auto val = _s;
+//    core::string_helper::replace(val, "\"", "\\\"");
 
     switch (_data.type()) {
     case tooska::core::variant::invalid:

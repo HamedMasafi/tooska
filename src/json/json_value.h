@@ -25,7 +25,7 @@ class value
     tooska::core::variant _data;
 
 public:
-    std::string _s;
+//    std::string _s;
     enum class type_t {
         invalid,
         bool_t,

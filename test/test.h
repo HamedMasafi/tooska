@@ -17,7 +17,7 @@
     auto _start_time = clock_::now();
 
 #define PASSED() \
-    std::cout << std::endl \
+    std::cerr << std::endl \
               << "All tests PASSED in: " \
               << std::chrono::duration_cast<second_>(clock_::now() - _start_time).count() \
               << "s" << std::endl; \
@@ -28,7 +28,7 @@
         auto _test_start_time = clock_::now(); \
         /*std::cout << "Running test " << #name << "..." << std::endl;*/ \
         test_##name(); \
-        std::cout << " * Test passed: "  \
+        std::cerr << " * Test passed: "  \
                   << #name << " in: " \
                   << std::chrono::duration_cast<second_>(clock_::now() - _test_start_time).count() \
                   << "s" << std::endl; \
@@ -46,6 +46,6 @@ void print(std::string title, std::string text){
     std::cout << "==== " + title + " ====" << std::endl
               << text << std::endl
               << "================" << std::endl;
-};
+}
 
 #endif // TEST_H

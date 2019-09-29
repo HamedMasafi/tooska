@@ -273,7 +273,7 @@ value *document::parse_value(const std::string &token)
         }
 
         if (v) {
-            v->_s = token;
+//            v->_s = token;
             return v;
         }
 

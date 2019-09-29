@@ -26,7 +26,7 @@ public:
         return this->size() ? this->at(this->size() - 1) : nullptr;
     }
 
-    void for_each(std::function<void(T*)> &callback) {
+    void for_each(const std::function<void(T*)> &callback) {
         std::for_each(this->begin(), this->end(), callback);
     }
     void delete_all() {

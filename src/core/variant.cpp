@@ -26,18 +26,18 @@ variant::variant(const std::string &value)
     _type = string_t;
 }
 
-variant::variant(const variant &other)
-{
-    _data = other._data;
-    s = other.s;
-    _type = other._type;
-}
+//variant::variant(const variant &other)
+//{
+//    _data = other._data;
+//    s = other.s;
+//    _type = other._type;
+//}
 
-variant::variant(variant &&other)
-{
-    _data = std::move(other._data);
-    s = std::move(other.s);
-    _type = std::move(other._type);
-}
+//variant::variant(variant &&other)
+//{
+//    _data = std::move(other._data);
+//    s = std::move(other.s);
+//    _type = std::move(other._type);
+//}
 
 TOOSKA_END_NAMESPACE

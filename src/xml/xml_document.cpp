@@ -19,6 +19,7 @@ int xml_document::token(int n)
 }
 
 xml_document::xml_document() : tooska::core::token_parser()
+      , _doctype(nullptr), _root_node(nullptr)
 {
     _literals.push_back(new literal_t{">", "<", "", true, true});
     _literals.push_back(new literal_t{"\"", "\"", "\\\"", true, true, false});
@@ -75,33 +76,28 @@ void xml_document::parse()
                         stack.top()->add_child(tag);
 
                     tags.push_back(tag);
-                    if (tag->has_close_tag)
+                    if (tag->_has_close_tag)
                         stack.push(tag);
-                    else
-                        continue;
+//                    else
+//                        continue;
                 } else {
                     std::cerr << _error_message << endl;
                 }
             }
         }
 
-//        put_token();
-//        token = take_token();
-//        if (token == ">") {
-//            if (next_token() != "<") {
-//                auto text = core::string_helper::trim_copy(token);
-//                if (is_valid_token(text)) {
-//                    if (!stack.size()) {
-//                        std::cerr << "Invalid document" << std::endl << text;
-//                        return;
-//                    }
 
-////                    text_node *textNode = new text_node;
-////                    textNode->set_text(text);
-////                    stack.top()->add_child(textNode);
-//                }
-//            }
-//        }
+        if (next_token(-1) == ">") {
+            if (next_token() != "<") {
+                std::string buffer;
+                while (next_token() != "<")
+                    buffer += take_token();
+
+                auto text = core::string_helper::trim_copy(buffer);
+                if (is_valid_token(text))
+                    stack.top()->set_inner_text(text);
+            }
+        }
     } while (token != std::string());
 }
 
@@ -113,7 +109,7 @@ node *xml_document::parse_tag_begin(const std::string &close_char)
     token = take_token();
     tag = new node(token);
     tag->set_name(token);
-    tag->has_close_tag = true;
+    tag->_has_close_tag = true;
 
     string name, value;
     int step = 0;
@@ -139,7 +135,7 @@ node *xml_document::parse_tag_begin(const std::string &close_char)
 
             if (token == close_char && next_token() == ">") {
                 take_token();
-                tag->has_close_tag = false;
+                tag->_has_close_tag = false;
                 return tag;
             }
 
@@ -197,10 +193,10 @@ node *xml_document::root_node() const
     return _root_node;
 }
 
-std::vector<node *> xml_document::find(const string &rule)
+tooska::core::nodes_vector<node> xml_document::find(const string &rule)
 {
     if (!_root_node)
-        return std::vector<node *>();
+        return tooska::core::nodes_vector<node>();
 
     auto rules = tooska::core::string_helper::split(rule, '/');
     tooska::core::nodes_vector<node> r;
@@ -217,6 +213,22 @@ xml_document::~xml_document()
 {
     delete _root_node;
     delete _doctype;
+}
+
+string xml_document::to_string(print_type type)
+{
+    core::string_renderer r(type);
+
+    if (_doctype) {
+        r.append("<?");
+        auto attrs = _doctype->attributes();
+        for(auto it = attrs.begin(); it != attrs.end(); ++it)
+            r.append(" " + it->first + "=\"" + it->second + "\"");
+        r.append("?>");
+        r.new_line();
+    }
+    _root_node->append(r);
+    return r.to_string();
 }
 
 TOOSKA_END_NAMESPACE

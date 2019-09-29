@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <vector>
 #include <cstdlib>
+#include <functional>
 
 #define FOR_EACH_TYPES(x) \
     x(bool, bool) \
@@ -64,11 +65,26 @@ public:
 
     variant(const char *data);
     variant(const std::string &value);
-    variant(const variant &other);
-    variant(variant &&other);
+//    variant(const variant &other);
+//    variant(variant &&other);
+
+//    variant operator =(const variant &other) {
+//        return variant(other);
+//    }
 
     inline type_t type() const {
         return _type;
+    }
+
+    inline std::string type_str() const {
+        switch (_type) {
+#define x(type, name) \
+        case name##_t: \
+            return #name;
+            FOR_EACH_CTYPES(x)
+            FOR_EACH_TYPES(x)
+#undef x
+        }
     }
 
     template <class T,
@@ -77,6 +93,8 @@ public:
     T value() const
     {
         switch (_type) {
+        case invalid:
+            return T();
         case bool_t:
             return _data.bool_t;
         case int_t:
@@ -93,6 +111,8 @@ public:
             return static_cast<T>(_data.long_double_t);
         case double_t:
             return static_cast<T>(_data.double_t);
+        case float_t:
+            return static_cast<T>(_data.float_t);
         case string_t: {
             if (std::is_same<T, int>())
                 return std::stoi(s);
@@ -143,6 +163,8 @@ public:
             return std::to_string(_data.long_double_t);
         case double_t:
             return std::to_string(_data.double_t);
+        case float_t:
+            return std::to_string(_data.float_t);
         default:
             //unreachable
             return T();
@@ -198,13 +220,17 @@ public:
         return v;
     }
     template<typename T>
-    variant_vector &from_vector(std::vector<T> vec) {
+    static variant_vector from_vector(std::vector<T> vec) {
         variant_vector v;
         v.reserve(vec.size());
-        std::for_each(vec->begin(), vec->end(), [&v](T t){
+        std::for_each(vec.begin(), vec.end(), [&v](T t){
             v.push_back(t);
         });
         return v;
+    }
+
+    void for_each(std::function<void(variant)> &callback) {
+        std::for_each(this->begin(), this->end(), callback);
     }
 };
 

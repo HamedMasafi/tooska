@@ -1,6 +1,7 @@
 #ifndef XML_DOCUMENT_H
 #define XML_DOCUMENT_H
 
+#include "../core/nodes_vector.h"
 #include "../core/token_parser.h"
 #include "../core/tree.h"
 
@@ -18,8 +19,10 @@ public:
     ~xml_document();
     node *root_node() const;
 
-    std::vector<node*> find(const std::string &rule);
+    tooska::core::nodes_vector<node> find(const std::string &rule);
     node *doctype() const;
+
+    std::string to_string(print_type type = print_type::compact);
 
 private:
     static int token(int n);

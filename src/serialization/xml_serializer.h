@@ -1,18 +1,23 @@
-#ifndef JSON_SERIALIZER_H
-#define JSON_SERIALIZER_H
+#ifndef xml_serializer_H
+#define xml_serializer_H
 
 #include "../global.h"
-#include "../json/json_object.h"
 #include "serializer_base.h"
 
+TOOSKA_BEGIN_NAMESPACE(xml)
+class node;
+TOOSKA_END_NAMESPACE
 TOOSKA_BEGIN_NAMESPACE(serialization)
 
-class json_serializer : public serializer_base
+class xml_serializer : public serializer_base
 {
-    tooska::json::object *_object;
+    tooska::xml::node *_node;
+    bool _fields_in_attributes;
+    bool _wrap_vectors;
+
 public:
-    json_serializer();
-    json_serializer(tooska::json::object *obj);
+    xml_serializer();
+    xml_serializer(tooska::xml::node *node);
 
 public:
     bool has_key(const std::string &key) const override;
@@ -25,10 +30,10 @@ public:
     void serialize_object(const std::string &name, serializable *object) override;
     void deserialize_object(const std::string &name, serializable *object) override;
     serializer_base *create_serializer(serializable *child) const override;
-    tooska::json::object *object() const;
-
+    tooska::xml::node *node() const;
+    void before_serialize(serializable *object);
 };
 
-    TOOSKA_END_NAMESPACE
+TOOSKA_END_NAMESPACE
 
-#endif // JSON_SERIALIZER_H
+#endif // xml_serializer_H

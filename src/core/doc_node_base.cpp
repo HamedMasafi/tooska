@@ -36,4 +36,19 @@ std::string doc_node_base::name() const
     return _name;
 }
 
+std::map<std::string, std::string> doc_node_base::attributes() const
+{
+    return _attributes;
+}
+
+std::string doc_node_base::inner_text() const
+{
+    return _inner_text;
+}
+
+void doc_node_base::set_inner_text(const std::string &inner_text)
+{
+    _inner_text = inner_text;
+}
+
 TOOSKA_END_NAMESPACE

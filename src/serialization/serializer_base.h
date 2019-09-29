@@ -1,38 +1,17 @@
 #ifndef SERIALIZER_BASE_H
 #define SERIALIZER_BASE_H
 
-#include <string>
 #include "../global.h"
-#include "../json/json_object.h"
-#include "../json/json_value.h"
+#include <string>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include "../core/variant.h"
 #include "serializable.h"
-#include "../core/converter.h"
-#include "serializable.h"
-
-namespace std {
-inline string to_string(string __val)
-{
-    return __val;
-}
-}
-
-#define FOR_EACH_TYPES(x) \
-    x(char) \
-    x(char16_t) \
-    x(char32_t) \
-    x(short) \
-    x(int) \
-    x(long) \
-    x(long long) \
-    x(unsigned int) \
-    x(unsigned long) \
-    x(unsigned long long) \
-    x(std::string) \
-    x(long double) \
-    x(double)
 
 TOOSKA_BEGIN_NAMESPACE(serialization)
 
+class serializable;
 class serializer_base
 {
 public:
@@ -42,34 +21,50 @@ public:
         Serialize
     } mode;
 
-    serializer_base(mode_t mode) : mode(mode)
-    {}
+    void serialize(serializable *obj) {
+        before_serialize(obj);
+        obj->__tokenize(this);
+    }
 
-//#define x(type) virtual void set(const std::string &name, type &value) = 0;
-//    FOR_EACH_TYPES(x)
-//#undef x
+    template<class T>
+    T *deserialize() {
+        auto t = new T;
+        t->__tokenize(this);
+        return t;
+    }
 
-    virtual serializable *create_object() const;
-    virtual serializer_base *create_serializer() const;
-
-    virtual bool has_key(const std::string &key) const = 0;
-    virtual void set_value(const std::string &name, const std::string &value) = 0;
-    virtual void get_value(const std::string &name, std::string &value) = 0;
-
+    serializer_base(mode_t m);
     template<typename T>
     void set(const std::string &name, T &t)
     {
         if (mode == Deserialize) {
             if (has_key(name)) {
-                std::string v;
-                get_value(name, v);
-                tooska::core::converter::read(t, v);
+                tooska::core::variant var;
+                deserialize_value(name, var);
+                t = var.value<T>();
             }
         } else if (mode == Serialize) {
-            set_value(name, std::to_string(t));
-//            auto v = new json::value(t);
-//            v->_s = std::to_string(t);
-//            _obj->insert(name, v);
+            tooska::core::variant var(t);
+            serialize_value(name, var);
+        }
+    }
+    template<typename T>
+    void set(const std::string &name, std::vector<T> &vec)
+    {
+        if (mode == Deserialize) {
+            if (!has_key(name))
+                return;
+
+            tooska::core::variant_vector v;
+            deserialize_vector(name, v);
+
+            vec.reserve(v.size());
+            std::for_each(v.begin(), v.end(), [&vec](tooska::core::variant t) {
+                vec.push_back(t.value<T>());
+            });
+        } else if (mode == Serialize) {
+            auto v = tooska::core::variant_vector::from_vector(vec);
+            serialize_vector(name, v);
         }
     }
     template<typename T>
@@ -82,123 +77,32 @@ public:
             return;
         }
 
-//        if (mode == Deserialize) {
-//            if (object)
-//                delete object;
-//            object = new T;
-//            auto s = dynamic_cast<tooska::serialization::serializable*>(object);
-//            auto obj = _obj->get(name)->to_object();
-//            serializer_base w(obj);
-//            /*s->*/w.serialize(object);
-//        } else if (mode == Serialize) {
-//            auto s = dynamic_cast<tooska::serialization::serializable*>(object);
-//            serializer_base w;
-//            /*s->*/w.serialize(object);
-//            _obj->insert(name, w._obj);
-//        }
+        if (mode == Serialize) {
+            if (!object) {
+                serialize_value(name, tooska::core::variant());
+                return;
+            }
+            serialize_object(name, object);
+        } else {
+            if (!object)
+                object = new T;
+            deserialize_object(name, object);
+        }
     }
 
-    virtual std::string serialize(serializable *object) const {
+    virtual void before_serialize(serializable *object)
+    {}
+    virtual serializer_base *create_serializer(serializable *child) const = 0;
+    virtual bool has_key(const std::string &key) const = 0;
+    virtual void serialize_value(const std::string &name, const tooska::core::variant &value) = 0;
+    virtual void deserialize_value(const std::string &name, tooska::core::variant &value) = 0;
 
-    }
+    virtual void serialize_vector(const std::string &name, const tooska::core::variant_vector &vec) = 0;
+    virtual void deserialize_vector(const std::string &name, tooska::core::variant_vector &vec) = 0;
 
-
-
-    //    virtual std::string serialize_array(const std::vector<T *> &object) const = 0;
-    //    virtual T *deserialize(const std::string &data) const = 0;
-    //    virtual std::vector<T *> deserialize_array(const std::string &data) const = 0;
+    virtual void serialize_object(const std::string &name, serializable *object) = 0;
+    virtual void deserialize_object(const std::string &name, serializable *object) = 0;
 };
-
-class json_serializer : public serializer_base
-{
-    tooska::json::object *_object;
-public:
-
-    json_serializer() : serializer_base(Serialize), _object(new json::object) {
-
-    }
-
-    json_serializer(json::object *obj) : serializer_base(Deserialize), _object(obj) {
-
-    }
-
-    bool has_key(const std::string &key) const {
-        return _object->has_key(key);
-    }
-    void set_value(const std::string &name, const std::string &value)
-    {
-        _object->insert(name, new json::value(value));
-    }
-    void get_value(const std::string &name, std::string &value)
-    {
-        value = _object->get(name)->to_string();
-    }
-
-    template<class S>
-    void deserialize(tooska::json::object *json, S *obj) const
-    {
-
-    }
-};
-
-//template<class C, class N>
-//class serializer : public serializer_base
-//{
-//public:
-//    serializer() : serializer_base(Unset)
-//    {}
-//};
-
-//template<class T>
-//class abstract_serializer
-//{
-//public:
-//    virtual std::string serialize(T *object) const = 0;
-//    virtual std::string serialize_array(const std::vector<T *> &object) const = 0;
-//    virtual T *deserialize(const std::string &data) const = 0;
-//    virtual std::vector<T *> deserialize_array(const std::string &data) const = 0;
-//};
-
-//template<class T>
-//class json_object_serializer : public abstract_serializer<T>
-//{
-//    json::object *object;
-
-//public:
-//    std::string serialize(T *object) const override
-//    {
-//        object->serialize(this);
-//    }
-//    std::string serialize_array(const std::vector<T*> &object) const override
-//    {
-
-//    }
-//    T *deserialize(const std::string &data) const override
-//    {
-////        if (object)
-//            //                delete object;
-//            //            object = new T;
-//            //            auto s = dynamic_cast<tooska::serialization::serializable*>(object);
-//            //            auto obj = _obj->get(name)->to_object();
-//            //            serializer<tooska::json::object> w(obj);
-//            //            s->serialize(&w);
-//            //        } else if (mode == Serialize) {
-//            //            auto s = dynamic_cast<tooska::serialization::serializable*>(object);
-//            //            serializer<tooska::json::object> w;
-//            //            s->serialize(&w);
-//            //            _obj->insert(name, w._obj);
-//            //        }
-////        auto t = new T;
-////        t->serialize(this);
-////        return t;
-//    }
-//    std::vector<T*> deserialize_array(const std::string &data) const override
-//    {
-
-//    }
-
-
-//};
 
 TOOSKA_END_NAMESPACE
 
