@@ -6,7 +6,7 @@
     virtual std::string __class_name() const {\
         return #name; \
     }\
-    void __tokenize(serializer_base *t)
+    void __tokenize(tooska::serialization::serializer_base *t)
 #define FIELD(name)    t->set(#name, name);
 #define FIELD_X(name, var)    t->set(#name, var);
 

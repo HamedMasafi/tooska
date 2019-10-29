@@ -5,10 +5,79 @@
 #include <algorithm>
 #include <soap/wsdl_parser.h>
 #include <soap/class_generator.h>
+#include <soap/soap_http_parser.h>
 #include <core/string_helper.h>
+#include <serialization/soap_serializer.h>
 #include <iostream>
+#include <xml/xml_node.h>
+
+using namespace tooska::serialization;
+using namespace tooska::soap;
+
+struct Add : public tooska::serialization::serializable {
+    int intA;
+    int intB;
+
+
+    SERIALIZATION_BLOCK(Add) {
+        FIELD(intA)
+        FIELD(intB)
+    }
+};
+
+void test_parser() {
+    std::string data_server = R"(POST /calculator.asmx HTTP/1.1
+Host: www.dneonline.com
+Content-Type: text/xml; charset=utf-8
+Content-Length: 349
+SOAPAction: "http://tempuri.org/Add"
+
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <Add xmlns="http://tempuri.org/">
+      <intA>int</intA>
+      <intB>int</intB>
+    </Add>
+  </soap:Body>
+</soap:Envelope>)";
+
+    std::string data_client = R"(HTTP/1.1 200 OK
+Content-Type: text/xml; charset=utf-8
+Content-Length: 352
+
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <AddResponse xmlns="http://tempuri.org/">
+      <AddResult>int</AddResult>
+    </AddResponse>
+  </soap:Body>
+</soap:Envelope>)";
+
+    soap_http_parser ps(data_server);
+    ps.parse();
+    ASSERT(ps.method() == "POST");
+    ASSERT(ps.path() == "/calculator.asmx");
+    ASSERT(ps.version() == "HTTP/1.1")
+    ASSERT(ps.headers()["Host"] == "www.dneonline.com")
+    ASSERT(ps.headers()["SOAPAction"] == "http://tempuri.org/Add");
+}
+
+void test_serializer() {
+    Add add;
+    add.intA = 3;
+    add.intB = 4;
+    soap_serializer serializer;
+    serializer.serialize(&add);
+
+    tooska::xml::node *node = serializer.node();
+    std::cout << node->to_string(tooska::print_type::formatted);
+}
 
 void test_soap() {
+    test_serializer();
+    test_parser();
 
     tooska::html::html_document _html;
        std::string wsdl_text = R"(<?xml version="1.0" encoding="utf-8"?>

@@ -1,6 +1,7 @@
 #ifndef WSDL_H
 #define WSDL_H
 
+#include "../serialization/serializer_base.h"
 #include "../serialization/serializable.h"
 
 TOOSKA_BEGIN_NAMESPACE(soap)

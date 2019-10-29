@@ -23,7 +23,10 @@ public:
     string_renderer(print_type type);
     void append(const std::string &buffer);
     void append(const std::string &&buffer);
+    void append_line(const std::string &buffer);
+    void append_line(const std::string &&buffer);
     void new_line();
+    void double_new_line();
     void space();
     void indent();
     void unindent();
