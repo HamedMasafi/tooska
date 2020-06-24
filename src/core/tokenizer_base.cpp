@@ -76,31 +76,26 @@ bool tokenizer_base::parse_tokens()
         if (ignore(ch))
             continue;
 
-        bool outer_continue = false;
-        for (literal_t *literal : _literals) {
-            string st;
-            if (literal->acceptable(ch))
-                st = read_until(last_token, literal);
-            if (st == literal->begin) {
-                last_token = read_until(_text, literal);
+        std::string s;
+        s+=ch;
+        auto literal = find_acceptable_literal(s);
+        if (literal) {
+            if (literal->insert_content) {
+                if (literal->insert_begin_end)
+                    _tokens.push_back(literal->begin);
 
-                if (literal->insert_content) {
-                    if (literal->insert_begin_end)
-                        _tokens.push_back(literal->begin);
+                if (is_valid_token(last_token))
+                    _tokens.push_back(last_token);
+                else if (literal->insert_if_empty)
+                    _tokens.push_back("");
 
-                    if (is_valid_token(last_token))
-                        _tokens.push_back(last_token);
-                    else if (literal->insert_if_empty)
-                        _tokens.push_back("");
+                if (literal->insert_begin_end)
+                    _tokens.push_back(literal->end);
 
-                    if (literal->insert_begin_end)
-                        _tokens.push_back(literal->end);
-                }
-
-                outer_continue = true;
-                break;
+                continue;
             }
         }
+        bool outer_continue = false;
         if (outer_continue)
             continue;
 
@@ -142,12 +137,10 @@ string tokenizer_base::read_until(const string &text, std::function<int (int)> f
     return s;
 }
 
-string tokenizer_base::read_until(const string &text, const literal_t *lt)
+string tokenizer_base::read_until(const literal_t *lt)
 {
     char ch;
 
-//    _private::string_buffer sb(lt->begin.length());
-//    _private::string_buffer se(lt->end.length());
     std::string ts;
 
     while (get_char_from_buffer(&ch)) {
@@ -160,10 +153,6 @@ string tokenizer_base::read_until(const string &text, const literal_t *lt)
         if (string_helper::ends_width(ts, lt->end))
             break;
     }
-//    if (i == start)
-//        return string();
-//    i += lt->end.length() - 1;
-//    start += lt->begin.length();
 
     return ts;
 //            text.substr(start, i - start - lt->end.length() + 1);
@@ -235,7 +224,49 @@ bool tokenizer_base::ignore(char ch)
 
 bool tokenizer_base::get_char_from_buffer(char *ch)
 {
+    if (_buffer.size()) {
+        *ch = _buffer.back();
+        _buffer.pop_back();
+    }
     return readchar(ch);
+}
+
+tokenizer_base::literal_t *tokenizer_base::find_acceptable_literal(std::string &s)
+{
+    char ch;
+    size_t max{0};
+    for (auto i = _literals.begin(); i < _literals.end(); ++i)
+        max = std::max(max, (*i)->begin.size());
+
+    while (get_char_from_buffer(&ch)) {
+        literal_t *alt{nullptr};
+        s += ch;
+        int acceptable_count{0};
+        for (auto i = _literals.begin(); i < _literals.end(); ++i) {
+            std::string rem;
+            auto ac = (*i)->match(s, rem);
+
+            if (ac) {
+                acceptable_count++;
+                alt = *i;
+            }
+        }
+        switch (acceptable_count) {
+        case 0:
+            for (size_t i = 1; i < s.size(); ++i)
+                _buffer.push_back(s.at(i));
+
+            return nullptr;
+
+        case 1:
+            s = read_until(alt);
+            return alt;
+
+        default:
+            continue;
+        }
+    }
+    return nullptr;
 }
 
 TOOSKA_END_NAMESPACE

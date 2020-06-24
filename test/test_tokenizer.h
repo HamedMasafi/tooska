@@ -7,6 +7,11 @@
 
 using namespace tooska::core;
 
+int token(int n)
+{
+    return isalnum(n) || isdigit(n) || n == '-';
+}
+
 void test_tokenizer() {
     string_tokenizer t;
     auto html_text = R"~(<!DOCTYPE HTML>
@@ -34,8 +39,9 @@ void test_tokenizer() {
     t._literals.push_back(new tokenizer_base::literal_t{">",  "<",  "",     true,  true});
     t._literals.push_back(new tokenizer_base::literal_t{"\"", "\"", "\\\"", false, true, true});
     t._literals.push_back(new tokenizer_base::literal_t{"'",  "'",  "\\'",  false, true, true});
-    t._literals.push_back(new tokenizer_base::literal_t{"!--",  "-->",  "",     false,  false});
-
+    t._literals.push_back(new tokenizer_base::literal_t{"<!--",  "-->",  "",     false,  false});
+    t._literals.push_back(new tokenizer_base::literal_t{"<!",  ">",  "",     false,  false});
+    t._check_fns.push_back(token);
 
     t.set_data(html_text);
     t.parse_tokens();

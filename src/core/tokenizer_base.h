@@ -27,6 +27,12 @@ class tokenizer_base
         bool acceptable(char ch) {
             return begin.size() && begin[0] == ch;
         }
+        bool acceptable(const std::string &s) {
+            return begin.size() >= s.size() && begin.substr(0, s.size()) == s;
+        }
+        bool match(const std::string &s, std::string &rem) {
+            return s.size() >= begin.size() && s.substr(0, begin.size()) == begin;
+        }
         literal_t(std::string begin, std::string end, std::string ignore,
                 bool insert_begin_end, bool insert_content)
             : begin(begin), end(end), ignore(ignore),
@@ -51,6 +57,8 @@ class tokenizer_base
     std::vector<int(*)(int)> _check_fns;
     std::vector<std::string> _tokens;
     std::vector<std::string>::iterator _token_it;
+    std::vector<char> _buffer;
+
     tokenizer_base();
     virtual ~tokenizer_base();
 
@@ -59,7 +67,7 @@ class tokenizer_base
     void print_invalid_token_message(const std::string &token, const std::string &expected = std::string());
     std::string read_until(const size_t &len);
     std::string read_until(const std::string &text, std::function<int(int)> fn);
-    std::string read_until(const std::string &text, const literal_t *lt);
+    std::string read_until(const literal_t *lt);
     bool is_valid_token(const std::string &token);
     std::string take_token();
     std::string next_token(int space = 0);
@@ -68,6 +76,8 @@ class tokenizer_base
     std::vector<std::string> tokens() const;
 
     std::string read_token();
+
+    literal_t *find_acceptable_literal(std::string &s);
 
 protected:
     virtual bool ignore(char ch);
