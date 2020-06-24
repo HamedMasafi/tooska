@@ -39,6 +39,7 @@ void test_html() {
     std::for_each(b.begin(), b.end(), [](tooska::html::html_tag *tag){
         tag->add_class("new-class");
     });
+    b.add_class("sample-class");
 
     auto new_classes = _html.query(".new-class");
     ASSERT(b.size() == new_classes.size());

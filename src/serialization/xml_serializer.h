@@ -31,7 +31,7 @@ public:
     void deserialize_object(const std::string &name, serializable *object) override;
     serializer_base *create_serializer(serializable *child) const override;
     tooska::xml::node *node() const;
-    void before_serialize(serializable *object);
+    void before_serialize(serializable *object) override;
 };
 
 TOOSKA_END_NAMESPACE

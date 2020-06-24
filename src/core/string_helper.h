@@ -28,6 +28,7 @@ public:
     static std::vector<std::string> split(std::string str, const char &sep);
 
     static bool starts_width(std::string &str, std::string &substr);
+    static bool ends_width(std::string const &full_string, std::string const &ending);
 };
 
 TOOSKA_END_NAMESPACE

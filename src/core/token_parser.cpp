@@ -17,7 +17,9 @@ token_parser::token_parser()
 
 token_parser::~token_parser()
 {
-
+    //delete literals and check functions
+    std::vector<literal_t*>().swap(_literals);
+    std::vector<int(*)(int)>().swap(_check_fns);
 }
 
 std::string token_parser::text() const
@@ -52,7 +54,7 @@ std::vector<std::string> token_parser::parse_tokens()
         std::string last_token;
         auto ch = static_cast<char>(_text.at(i));
 
-        if (iscntrl(ch) || isspace(ch) || isblank(ch) || ch == '\n' || ch == '\r')
+        if (iscntrl(ch) || isspace(ch) || isblank(ch) /*|| ch == '\n' || ch == '\r'*/)
             continue;
 
         bool outer_continue = false;
@@ -99,13 +101,13 @@ std::vector<std::string> token_parser::parse_tokens()
         }
     }
 
-    if (_tokens.at(_tokens.size() - 1) == "<")
+    if (_tokens.size() && _tokens.at(_tokens.size() - 1) == "<")
         _tokens.pop_back();
-//    std::cout << "====TOKENS====" << std::endl;
-//    std::for_each(_tokens.begin(), _tokens.end(), [&](std::string token){
-//       std::cout << token << std::endl;
-//    });
-//    std::cout << "==============" << _tokens.size() << std::endl;
+    std::cout << "====TOKENS====" << std::endl;
+    std::for_each(_tokens.begin(), _tokens.end(), [&](std::string token){
+       std::cout << token << std::endl;
+    });
+    std::cout << "==============" << _tokens.size() << std::endl;
     _token_it = _tokens.begin();
     return _tokens;
 }

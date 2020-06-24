@@ -11,6 +11,7 @@
 #include "test_soap.h"
 #include "test_temp.h"
 #include "test_variant.h"
+#include "test_tokenizer.h"
 
 int main() {
     START();
@@ -22,7 +23,9 @@ int main() {
 //    RUN_TEST(variant);
 //    RUN_TEST(json);
 //    RUN_TEST(serialization);
-    RUN_TEST(soap);
+//    RUN_TEST(soap);
+    RUN_TEST(tokenizer);
+
     PASSED();
 }
 

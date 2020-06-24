@@ -115,4 +115,10 @@ bool string_helper::starts_width(string &str, string &substr)
     return str.rfind(substr) == 0;
 }
 
+bool string_helper::ends_width(std::string const &str, std::string const &substr) {
+    if (str.length() >= substr.length())
+        return (0 == str.compare (str.length() - substr.length(), substr.length(), substr));
+    else
+        return false;
+}
 TOOSKA_END_NAMESPACE

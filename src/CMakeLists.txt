@@ -1,11 +1,21 @@
-file(GLOB SOURCES "core/*.cpp" "html/*.cpp" "json/*.cpp" "soap/*.cpp" "xml/*.cpp" "serialization/*.cpp")
-#add_subdirectory(core)
-#add_subdirectory(html)
-#add_subdirectory(json)
-#add_subdirectory(serialization)
+#file(GLOB SOURCES
+#    "core/*.cpp"
+#    "html/*.cpp"
+#    "json/*.cpp"
+#    "soap/*.cpp"
+#    "xml/*.cpp"
+#    "serialization/*.cpp"
+#    )
 
+add_subdirectory(core)
+add_subdirectory(html)
+add_subdirectory(json)
+add_subdirectory(serialization)
+add_subdirectory(xml)
+add_subdirectory(soap)
 
-add_library(tooska SHARED ${SOURCES})
+file(GLOB HEADERS ${HEADERS})
+add_library(tooska SHARED ${SOURCES} ${HEADERS})
 #include_directories("src")
 find_package (Threads)
 

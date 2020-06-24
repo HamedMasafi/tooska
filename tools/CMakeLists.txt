@@ -1,1 +1,2 @@
 add_subdirectory(wsdl_parser)
+add_subdirectory(html_formatter)

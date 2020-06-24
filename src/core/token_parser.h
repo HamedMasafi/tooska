@@ -44,7 +44,7 @@ protected:
     std::string _error_message;
     std::vector<literal_t*> _literals;
     std::string _text;
-//    std::vector<std::function<int(int)>> _check_fns;
+
     std::vector<int(*)(int)> _check_fns;
     std::vector<std::string> _tokens;
     std::vector<std::string>::iterator _token_it;
