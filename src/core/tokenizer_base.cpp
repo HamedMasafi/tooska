@@ -78,7 +78,9 @@ bool tokenizer_base::parse_tokens()
 
         bool outer_continue = false;
         for (literal_t *literal : _literals) {
-            string st = read_until(last_token, literal);
+            string st;
+            if (literal->acceptable(ch))
+                st = read_until(last_token, literal);
             if (st == literal->begin) {
                 last_token = read_until(_text, literal);
 

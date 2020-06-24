@@ -24,6 +24,9 @@ class tokenizer_base
         bool insert_content;
         bool insert_if_empty;
 
+        bool acceptable(char ch) {
+            return begin.size() && begin[0] == ch;
+        }
         literal_t(std::string begin, std::string end, std::string ignore,
                 bool insert_begin_end, bool insert_content)
             : begin(begin), end(end), ignore(ignore),
