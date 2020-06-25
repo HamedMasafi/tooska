@@ -37,21 +37,41 @@ void test_tokenizer() {
     </html>)~";
 
     t._literals.push_back(new tokenizer_base::literal_t{">",  "<",  "",     true,  true});
-    t._literals.push_back(new tokenizer_base::literal_t{"\"", "\"", "\\\"", false, true, true});
-    t._literals.push_back(new tokenizer_base::literal_t{"'",  "'",  "\\'",  false, true, true});
+//    t._literals.push_back(new tokenizer_base::literal_t{"\"", "\"", "\\\"", false, true, true});
+//    t._literals.push_back(new tokenizer_base::literal_t{"'",  "'",  "\\'",  false, true, true});
     t._literals.push_back(new tokenizer_base::literal_t{"<!--",  "-->",  "",     false,  false});
-    t._literals.push_back(new tokenizer_base::literal_t{"<!",  ">",  "",     false,  false});
-    t._check_fns.push_back(token);
+//    t._literals.push_back(new tokenizer_base::literal_t{"<!",  ">",  "",     false,  false});
+//    t._check_fns.push_back(token);
 
     t.set_data(html_text);
-    t.parse_tokens();
-    auto tokens = t.tokens();
-
-    std::cout << "====TOKENS====" << std::endl;
-    std::for_each(tokens.begin(), tokens.end(), [&](std::string token){
-        std::cout << token << "<<<" << std::endl;
+//    t.parse_tokens();
+    t.add_check_function(1, [](char n){
+       return isalpha(n) || isdigit(n) || n == '-';
     });
-    std::cout << "==============: count=" << tokens.size() << std::endl;
+    t.add_check_function(2, [](char n){
+       return n == '<';
+    });
+    t.add_check_function(3, [](char n){
+        return n == '>';
+    });
+    while (true) {
+        auto token = t.read_token();
+
+        if (!token.code)
+            break;
+        if (token.literal)
+            std::cout << "Literal " << token.token << std::endl;
+        else if (token.token.size())
+            std::cout << "Token code:" << token.code << "   " << token.token << std::endl;
+    }
+
+//    auto tokens = t.tokens();
+
+//    std::cout << "====TOKENS====" << std::endl;
+//    std::for_each(tokens.begin(), tokens.end(), [&](std::string token){
+//        std::cout << token << "<<<" << std::endl;
+//    });
+//    std::cout << "==============: count=" << tokens.size() << std::endl;
 }
 
 

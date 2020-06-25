@@ -12,19 +12,21 @@
 #include "test_temp.h"
 #include "test_variant.h"
 #include "test_tokenizer.h"
+#include "test_css_query.h"
 
 int main() {
     START();
 
 //    RUN_TEST(temp);
-//    RUN_TEST(html);
+    RUN_TEST(html);
 //    RUN_TEST(xml);
-//    RUN_TEST(css);
+    RUN_TEST(css);
 //    RUN_TEST(variant);
 //    RUN_TEST(json);
 //    RUN_TEST(serialization);
 //    RUN_TEST(soap);
-    RUN_TEST(tokenizer);
+//    RUN_TEST(tokenizer);
+    RUN_TEST(css_query);
 
     PASSED();
 }

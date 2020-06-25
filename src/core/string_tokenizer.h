@@ -16,6 +16,7 @@ public:
     void set_data(const std::string &data);
 
     bool readchar(char *ch) override;
+    bool atend() override;
 };
 
 TOOSKA_END_NAMESPACE

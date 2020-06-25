@@ -5,6 +5,7 @@
 #include <functional>
 #include <vector>
 #include <list>
+#include <map>
 
 TOOSKA_BEGIN_NAMESPACE(core)
 
@@ -50,14 +51,28 @@ class tokenizer_base
         {}
     };
 
+    typedef std::function<bool(char)> char_check_cb;
+    class toekn_fn {
+        char_check_cb cb;
+        size_t min_len;
+        ssize_t max_len;
+    };
+
+    struct token_t {
+        size_t code;
+        std::string token;
+        literal_t *literal;
+    };
+
     std::string _error_message;
     std::vector<literal_t*> _literals;
-    std::string _text;
-
-    std::vector<int(*)(int)> _check_fns;
     std::vector<std::string> _tokens;
     std::vector<std::string>::iterator _token_it;
+    std::map<size_t, char_check_cb> _check_functions;
     std::vector<char> _buffer;
+
+    std::string _text;
+    std::vector<int(*)(int)> _check_fns;
 
     tokenizer_base();
     virtual ~tokenizer_base();
@@ -75,13 +90,18 @@ class tokenizer_base
 
     std::vector<std::string> tokens() const;
 
-    std::string read_token();
+    token_t read_token();
 
     literal_t *find_acceptable_literal(std::string &s);
+    size_t find_acceptable_token(std::string &s);
+
+    void add_check_function(size_t code, char_check_cb cb);
+    void add_literal(literal_t *lt);
 
 protected:
     virtual bool ignore(char ch);
     virtual bool readchar(char *ch) = 0;
+    virtual bool atend() = 0;
     bool get_char_from_buffer(char *ch);
 };
 

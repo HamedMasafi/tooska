@@ -27,4 +27,9 @@ bool string_tokenizer::readchar(char *ch)
     return true;
 }
 
+bool string_tokenizer::atend()
+{
+    return _index == _data.end();
+}
+
 TOOSKA_END_NAMESPACE

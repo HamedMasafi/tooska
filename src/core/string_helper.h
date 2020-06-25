@@ -24,6 +24,8 @@ public:
 
     static void tolower(std::string &str);
     static void toupper(std::string &str);
+    static std::string tolower(std::string &&str);
+    static std::string toupper(std::string &&str);
     static bool replace(std::string &str, const std::string &from, const std::string &to);
     static std::vector<std::string> split(std::string str, const char &sep);
 

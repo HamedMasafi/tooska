@@ -19,7 +19,7 @@ void html_writer::begin_tag(const std::string &tag_name)
     _tags.push(tag);
 }
 
-void html_writer::begin_tag(const core::html_tag_type &tag_type)
+void html_writer::begin_tag(const core::html_tag_t &tag_type)
 {
     auto tag = new html_tag;
     _tags.top()->add_child(tag);

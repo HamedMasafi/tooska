@@ -54,6 +54,22 @@ void string_helper::tolower(string &str)
       towlower);
 }
 
+
+string string_helper::tolower(string &&str)
+{
+    std::string s = str;
+    tolower(s);
+    return s;
+}
+
+string string_helper::toupper(string &&str)
+{
+    std::string s = str;
+    toupper(s);
+    return s;
+}
+
+
 // trim from end (in place)
 void string_helper::rtrim(string &s) {
     s.erase(find_if(s.rbegin(), s.rend(), [](int ch) {

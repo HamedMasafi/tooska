@@ -54,8 +54,8 @@ std::vector<std::string> token_parser::parse_tokens()
         std::string last_token;
         auto ch = static_cast<char>(_text.at(i));
 
-        if (iscntrl(ch) || isspace(ch) || isblank(ch) /*|| ch == '\n' || ch == '\r'*/)
-            continue;
+//        if (iscntrl(ch) || isspace(ch) || isblank(ch) /*|| ch == '\n' || ch == '\r'*/)
+//            continue;
 
         bool outer_continue = false;
         for (literal_t *literal : _literals) {

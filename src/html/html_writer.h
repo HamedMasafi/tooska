@@ -18,7 +18,7 @@ public:
     html_writer();
 
     void begin_tag(const std::string &tag_name);
-    void begin_tag(const core::html_tag_type &tag_type);
+    void begin_tag(const core::html_tag_t &tag_type);
     void write_text(const std::string &text_node);
     void set_attr(const std::string &name, const std::string &value);
     void add_class(const std::string &name);

@@ -12,6 +12,7 @@ set(SOURCES
    ${CMAKE_CURRENT_SOURCE_DIR}/variant.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/tokenizer_base.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/string_tokenizer.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/file_tokenizer.cpp
 #   ${CMAKE_CURRENT_SOURCE_DIR}/shared_data.cpp
    PARENT_SCOPE
 )

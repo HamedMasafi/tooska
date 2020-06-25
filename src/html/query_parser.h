@@ -12,6 +12,7 @@ TOOSKA_BEGIN_NAMESPACE(html)
 class html_tag;
 class query_parser : public core::token_parser
 {
+public:
     struct query_rule_t{
         std::string id;
         std::string tag_name;
@@ -25,8 +26,9 @@ class query_parser : public core::token_parser
 
         query_rule_t();
     };
-    std::vector<std::vector<query_rule_t*>> rules;
-public:
+    typedef std::vector<query_rule_t*> rules_group;
+    typedef std::vector<rules_group> rules_group_list;
+
     query_parser();
     html_tag_vector results;
 
@@ -38,10 +40,14 @@ public:
     html_tag_vector search();
     void search(html_tag_vector &result, html_tag *tag,
                 size_t rule_id,
-                std::vector<query_rule_t *> rules,
+                rules_group _rules,
                 bool rescue = true);
+    rules_group_list rules() const;
+
 private:
+    rules_group_list _rules;
     static int token(int n);
+    static int space(int n);
 };
 
 TOOSKA_END_NAMESPACE

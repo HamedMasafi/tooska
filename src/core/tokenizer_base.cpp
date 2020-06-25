@@ -209,12 +209,44 @@ string tokenizer_base::read_until(const size_t &len)
     return s;
 }
 
-string tokenizer_base::read_token()
+tokenizer_base::token_t tokenizer_base::read_token()
 {
     char ch;
-    while (true) {
-        get_char_from_buffer(&ch);
+//    get_char_from_buffer(&ch);
+
+    std::string s;
+//    s += ch;
+    auto literal = find_acceptable_literal(s);
+    if (literal) {
+        if (literal->insert_content) {
+            if (literal->insert_begin_end)
+                _tokens.push_back(literal->begin);
+
+            if (is_valid_token(s))
+                _tokens.push_back(s);
+            else if (literal->insert_if_empty)
+                _tokens.push_back("");
+
+            if (literal->insert_begin_end)
+                _tokens.push_back(literal->end);
+        }
+
+        return token_t{1, s, literal};
     }
+
+    s = "";
+    auto code = find_acceptable_token(s);
+    if (code) {
+        return token_t{code, s, nullptr};
+    }
+    string_helper::trim(s);
+    if (s.size())
+        return token_t{99, s, nullptr};
+
+    if (atend())
+        return token_t{0, s, nullptr};
+
+    return token_t{99, s, nullptr};
 }
 
 bool tokenizer_base::ignore(char ch)
@@ -227,6 +259,7 @@ bool tokenizer_base::get_char_from_buffer(char *ch)
     if (_buffer.size()) {
         *ch = _buffer.back();
         _buffer.pop_back();
+        return true;
     }
     return readchar(ch);
 }
@@ -253,7 +286,7 @@ tokenizer_base::literal_t *tokenizer_base::find_acceptable_literal(std::string &
         }
         switch (acceptable_count) {
         case 0:
-            for (size_t i = 1; i < s.size(); ++i)
+            for (size_t i = 0; i < s.size(); ++i)
                 _buffer.push_back(s.at(i));
 
             return nullptr;
@@ -266,7 +299,37 @@ tokenizer_base::literal_t *tokenizer_base::find_acceptable_literal(std::string &
             continue;
         }
     }
+    _buffer.push_back(ch);
     return nullptr;
+}
+
+size_t tokenizer_base::find_acceptable_token(string &s)
+{
+    char ch;
+    get_char_from_buffer(&ch);
+    s += ch;
+    for (auto i = _check_functions.begin(); i != _check_functions.end(); ++i) {
+        if ((*i).second(ch)) {
+            do {
+                get_char_from_buffer(&ch);
+                s += ch;
+            } while ((*i).second(ch));
+            s = s.substr(0, s.size() - 1);
+            _buffer.push_back(ch);
+            return (*i).first;
+        }
+    }
+    return 0;
+}
+
+void tokenizer_base::add_check_function(size_t code, tokenizer_base::char_check_cb cb)
+{
+    _check_functions[code] = cb;
+}
+
+void tokenizer_base::add_literal(tokenizer_base::literal_t *lt)
+{
+    _literals.push_back(lt);
 }
 
 TOOSKA_END_NAMESPACE
