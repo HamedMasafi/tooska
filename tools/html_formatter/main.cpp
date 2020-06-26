@@ -3,13 +3,14 @@
 #include <html/html_document.h>
 #include <string>
 #include <vector>
+#include <core/string_helper.h>
 
 using namespace std;
 using namespace tooska::html;
 
 int main(int argc, char **argv)
 {
-    if (argc != 3) {
+    if (argc < 3 || argc > 4) {
         cout << "Invalid arguments count" << endl;
         return -1;
     }
@@ -27,7 +28,17 @@ int main(int argc, char **argv)
     doc.set_text(html_content);
 
     std::ofstream out(argv[2]);
-    out << doc.to_string(tooska::print_type::formatted);
+
+    if (argc == 4) {
+        std::string type = argv[3];
+        tooska::core::string_helper::tolower(type);
+        if (type == "--compact" || type == "-c")
+            out << doc.to_string(tooska::print_type::compact);
+        else
+            out << doc.to_string(tooska::print_type::formatted);
+    } else {
+        out << doc.to_string(tooska::print_type::formatted);
+    }
     out.close();
     std::cout << doc.to_string();
 
