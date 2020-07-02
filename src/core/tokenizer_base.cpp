@@ -305,8 +305,36 @@ tokenizer_base::literal_t *tokenizer_base::find_acceptable_literal(std::string &
 
 size_t tokenizer_base::find_acceptable_token(string &s)
 {
+    auto fnlist = _check_functions;
     char ch;
-    get_char_from_buffer(&ch);
+    size_t selected_fn{0};
+
+    while (fnlist.size()) {
+        get_char_from_buffer(&ch);
+        s += ch;
+
+        for (auto fn = fnlist.begin(); fn != fnlist.end(); ++fn) {
+            if (!(*fn).second(ch)) {
+                if (fn == fnlist.end())
+                    break;
+                else {
+                    fnlist.erase(fn);
+                    --fn;
+                    continue;
+                }
+            }
+        }
+
+        if (fnlist.size() == 1)
+            selected_fn = (*fnlist.begin()).first;
+    }
+
+    if (selected_fn) {
+    } else {
+        s.clear();
+    }
+    return selected_fn;
+
     s += ch;
     for (auto i = _check_functions.begin(); i != _check_functions.end(); ++i) {
         if ((*i).second(ch)) {

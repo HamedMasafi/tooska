@@ -36,10 +36,10 @@ void test_tokenizer() {
         </body>
     </html>)~";
 
-    t._literals.push_back(new tokenizer_base::literal_t{">",  "<",  "",     true,  true});
+//    t._literals.push_back(new tokenizer_base::literal_t{">",  "<",  "",     true,  true});
 //    t._literals.push_back(new tokenizer_base::literal_t{"\"", "\"", "\\\"", false, true, true});
 //    t._literals.push_back(new tokenizer_base::literal_t{"'",  "'",  "\\'",  false, true, true});
-    t._literals.push_back(new tokenizer_base::literal_t{"<!--",  "-->",  "",     false,  false});
+//    t._literals.push_back(new tokenizer_base::literal_t{"<!--",  "-->",  "",     false,  false});
 //    t._literals.push_back(new tokenizer_base::literal_t{"<!",  ">",  "",     false,  false});
 //    t._check_fns.push_back(token);
 
